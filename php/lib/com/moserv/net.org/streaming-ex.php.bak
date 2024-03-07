@@ -1,0 +1,169 @@
+<?php
+
+require_once('com/moserv/util/web.php');
+
+
+class StreamingEx {
+
+	private $filePath;
+	private $
+
+	
+
+
+}
+
+
+
+
+
+
+
+class Responder {
+
+	private $code;
+	private $headers;
+
+
+	public function __construct() {
+		$this->code = 200;
+	}
+
+	protected function respondHeaders() {
+		http_response_code($this->code);
+
+		foreach ($this->headers as $key => $value) {
+			header("{$key}: {$value}");
+		}
+	}
+
+	protected function respondBody() { }
+
+	public function execute() {
+		$this->respondHeaders();
+
+		$this->respondBody();
+	}
+
+
+	public function setCode($code) {
+		$this->code = $code;
+	}
+
+	public function setHeader($key, $value) {
+		$this->headers[$key] = $value;
+	}
+
+	public function getHeader($key) {
+		return $this->headers[$key];
+	}
+}
+
+
+class DocumentResponder extends Responder {
+
+	private $filePath;
+
+	private $contentType;
+	private $fileInfo;
+	private $fileSize;
+
+
+	public function __construct() {
+		Responder::
+	}
+
+	public function setContentType($contentType) {
+		$this->contentType = $contentType;
+	}
+
+	public function setFilePath($filePath, $contentType = null) {
+		global $_SERVER;
+
+		if ($this->filePath !== $filePath) {
+
+			$this->filePath = $filePath;
+
+			$this->fileInfo = pathinfo($this->filePath);
+			$this->fileSize = filesize($this->filePath);
+			$this->contentType = ($contentType === null)? Web::getMimeType($this->filePath): $contentType;
+		}
+	}
+
+
+	protected function respondHeaders() {
+		$this->setCode(200);
+		$this->setHeader("content-type", $this->contentType);
+		$this->setHeader("content-length", $this->contentLength);
+
+		StreamingResponder::respondHeaders();
+	}
+
+	public function respondBody() {
+		
+		
+
+
+		StreamingResponder::respondBody();
+	}
+
+
+	public function execute() {
+		
+
+		StreamingResponder::execute();
+	}
+}
+
+
+class StreamingProvider {
+
+	private $filename;
+	private $fileinfo;
+	private $filesize;
+
+	private $contenttype;
+	private $boundary;
+
+	public function execute() {
+		global $_SERVER;
+
+		if (!is_file($this->filename)) {
+			$this->respondFileNotFound();
+
+			exit;
+		}
+
+		$this->fileinfo = pathinfo($this->filename);
+		$this->filesize = filesize($this->filename);
+
+
+		if ($_SERVER("REQUEST_METHOD") === "HEAD") {
+			$this->respondHead();
+
+			exit;
+		}
+
+
+#		if ($_SERVER["REQUEST_METHOD"] === "GET" && isset($_SERVER['HTTP_RANGE']) && $range = stristr(trim($_SERVER['HTTP_RANGE']), 'bytes=')) {
+		if ($_SERVER["REQUEST_METHOD"] === "GET" && isset($_SERVER['HTTP_RANGE'])) {
+			preg_match('/^bytes=(.+)$/i', $_SERVER['HTTP_RANGE'], $matches)
+			
+		}
+	}
+
+	protected function respondFileNotFound() {
+		header("HTTP/1.1 400 Invalid Request");
+		echo "<h3>file ({$this->filename}) not found!</h3>";
+	}
+
+	protected function respondHead() {
+		header("Accept-Ranges: bytes");
+		header("Content-Type: {$this->contenttype}");
+		header("Content-Length: {$this->filesize}");
+	}
+
+	protected function 
+}
+
+

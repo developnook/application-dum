@@ -1,0 +1,480 @@
+<?php
+
+require_once('com/moserv/mq/mq.php');
+require_once('com/moserv/net/url.php');
+require_once('com/moserv/sql/connection.php');
+require_once('com/moserv/karbon/mailer.php');
+
+class Session {
+	private $persistent;
+	private $transaction;
+
+	private $url;
+	private $connection;
+	private $mq;
+	private $sessionId;
+	private $hitId;
+	private $mailer;
+
+	public static $instance = null;
+	public static $database = null;
+
+	public static $tokenheaders = array(
+		'HTTP_AUTHORIZATION',
+		'HTTP_MOBILETOKEN'
+	);
+
+	public static $sites = array(
+		'www.sweat16official.com'	=> 'sweat16',
+		'sweat16official.com'		=> 'sweat16',
+		's16a.moserv.co.th'		=> 'sweat16',
+		's16s.moserv.co.th'		=> 'sweat16',
+		'sweat16.moserv.co.th'		=> 'sweat16',
+		'sweat16.karbonz.com'		=> 'sweat16',
+
+		'sy51.karbonz.com'		=> 'sy51'
+	);
+
+	protected function doLog($line) {
+
+		return;
+
+		$timestamp = (new DateTime())->format('Y-m-d H:i:s');
+
+		file_put_contents('/tmp/header.log', "{$timestamp} - {$line}\n", FILE_APPEND);
+	}
+
+	public static function newInstance() {
+		if (Session::$instance == null) {
+			Session::$instance = new Session();
+			Session::$instance->init();
+		}
+
+		return Session::$instance;
+	}
+
+	public function __construct() {
+		$this->persistent = true;
+		$this->transaction = true;
+		$this->url = new Url();
+
+		$this->identifyDatabase();
+
+
+//		$this->mq = new RabbitMQ(
+//			'bangkok.moserv.mobi',
+//			5672,
+//			'karbonz',
+//			'supermario',
+//			'karbonz'
+//		);
+
+//		$this->mq->pconnect();
+
+		$database = new MySqlEx(
+			'sweat16',			# base
+			'phatthalung.moserv.mobi',	# host
+			'3306',				# port
+			'sweat16_user',			# user
+			'supermariO16!'			# pass
+		);
+
+		$this->connection = new Connection($database, $this->persistent);
+
+		$this->mailer = new Mailer($this);
+
+		if ($this->transaction) {
+			$this->connection->beginTransaction();
+		}
+	}
+
+
+	public function __destruct() {
+//		if ($this->transaction) {
+//			$this->connection->commit();
+//		}
+	}
+
+	protected function identifyDatabase() {
+		$host = strtolower($this->url->getHost());
+
+		if (empty(Session::$sites[$host])) {
+			http_response_code(404);
+			echo '404 Page not found';
+
+			exit;
+		}
+		else {
+			Session::$database = Session::$sites[$host];
+		}
+	}
+
+	public function qn() {
+		return Session::$database;
+	}
+
+	public function db() {
+		return Session::$database;
+	}
+
+	protected function startSession() {
+		global $_SERVER;
+		global $_SESSION;
+		
+		$tokens = null;
+
+		$this->doLog('start session');
+		$this->doLog(print_r($_SERVER, true));
+
+		foreach (Session::$tokenheaders as $header) {
+		$this->doLog($header);
+			if (array_key_exists($header, $_SERVER) && preg_match('/^([^ ]+) +([^ ]+)$/', $_SERVER[$header], $selects)) {
+				$this->doLog('oyes');
+				$authors = array();
+				list(, $authors['command'], $authors['token']) = $selects;
+
+				if (strtoupper($authors['command']) === 'BEARER') {
+					$base64 = array();
+					list($base64['header'], $base64['payload'], $base64['signature']) = explode('.', $authors['token']);
+					$tokens = array(
+						'header'	=> json_decode(base64_decode($base64['header']), true),
+						'payload'	=> json_decode(base64_decode($base64['payload']), true),
+						'signature'	=> base64_decode($base64['signature'])
+					);
+
+					session_id($tokens['payload']['session-id']);
+
+					break;
+				}
+			}
+		}
+		
+		$host = $this->url->getHost();
+		$domain = preg_replace('/^[^\\.]+/', '', $host);
+		$lifetime = 30 * 24 * 60 * 60;
+		$htdocs = realpath($_SERVER['DOCUMENT_ROOT']);
+		$home = dirname($htdocs);
+
+		ini_set('session.cookie_lifetime', $lifetime);
+		ini_set('session.gc_maxlifetime', $lifetime);
+		ini_set('session.save_path', "{$home}/session");
+#		ini_set('session.save_path', '/usr/project/portal/ysmt-s16a-portal/session');
+
+
+		session_set_cookie_params(
+			$lifetime,	# lifetime
+			'/',		# path
+#			$domain,	# domain
+			$host,		# domain
+			false,		# https only (ssl only)
+			true		# http only (not javascript)
+		);
+
+		session_name('sweat16-session-id');
+		session_start();
+		
+		if ($tokens != null && empty($_SESSION['user-id'])) {
+			$_SESSION['user-id'] = $tokens['payload']['user-id'];
+		}
+	}
+
+	public function init() {
+
+
+		$this->startSession();
+
+		if (($this->sessionId = $this->querySession()) == 0) {
+			$this->sessionId = $this->newSession();
+		}
+
+		$this->hitId = $this->newHit($this->sessionId);
+	}
+
+	public function getRemoteAddress() {
+		global $_SERVER;
+		$remoteAddress = null;
+
+		if (empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+			$remoteAddress = $_SERVER['REMOTE_ADDR'];
+		}
+		else {
+			$remoteAddress = $_SERVER['HTTP_X_FORWARDED_FOR'];
+		}
+
+		return $remoteAddress;
+	}
+
+	public function getUserAgent() {
+		global $_SERVER;
+		$userAgent = $_SERVER['HTTP_USER_AGENT'];
+
+		return $userAgent;
+	}
+
+	public function getMd5Sum() {
+		global $_SERVER;
+
+		$userAgent = $this->getUserAgent();
+		$remoteAddress = $this->getRemoteAddress();
+
+		$md5sum = md5("{$userAgent}{$remoteAddress}");
+
+		return $md5sum;
+	}
+
+	public function getSessionLine() {
+		$sessionLine = session_id();
+
+		return $sessionLine;
+	}
+
+	public function getUrl() {
+		return $this->url;
+	}
+
+	public function getReferer() {
+		global $_SERVER;
+
+		$referer = (empty($_SERVER['HTTP_REFERER']))? '': $_SERVER['HTTP_REFERER'];
+
+		return $referer;
+	}
+
+	protected function querySession() {
+		$query = $this->connection->createQuery(
+<<<sql
+			select
+				session_id
+			from {$this->db()}.session
+			where session_line = ?
+			and md5sum = ?
+sql
+		);
+
+		$query->setString(1, $this->getSessionLine());
+		$query->setString(2, $this->getMd5Sum());
+
+
+		$query->open();
+
+		$rows = $query->getResultArray();
+
+		$sessionId = (count($rows) == 0)? 0: $rows[0]['session_id'];
+
+		return $sessionId;
+	}
+
+
+
+	protected function newSession() {
+		$query = $this->connection->createQuery(
+<<<sql
+			insert into {$this->db()}.session (
+				session_line,
+				md5sum,
+				user_agent,
+				remote_address
+			)
+			values (
+				?,
+				?,
+				?,
+				?
+			)
+sql
+		);
+
+		$query->setString(1, $this->getSessionLine());
+		$query->setString(2, $this->getMd5Sum());
+		$query->setString(3, $this->getUserAgent());
+		$query->setString(4, $this->getRemoteAddress());
+
+		$query->open();
+		$sessionId = $this->connection->lastId();
+
+		return $sessionId;
+	}
+
+	protected function newHit($sessionId) {
+		global $_SERVER, $_REQUEST;
+
+		$query = $this->connection->createQuery(
+<<<sql
+			insert into {$this->db()}.hit (
+				session_id,
+				is_app,
+				is_mobile,
+				requested_with,
+				url,
+				referer,
+				user_agent,
+				remote_address,
+				data
+			)
+			values (
+				?,
+				?,
+				?,
+				?,
+				?,
+				?,
+				?,
+				?,
+				?
+			)
+sql
+		);
+
+		$query->setInt(1, $sessionId);
+		$query->setInt(2, ($this->isApp())? 1: 0);
+		$query->setInt(3, ($this->isMobile())? 1: 0);
+		$query->setString(4, $this->getRequestedWith());
+
+		$query->setString(5, $this->getUrl()->toString());
+		$query->setString(6, $this->getReferer());
+
+		$query->setString(7, $this->getUserAgent());
+		$query->setString(8, $this->getRemoteAddress());
+		$query->setString(9, json_encode($_REQUEST));
+
+		$query->open();
+		$hitId = $this->connection->lastId();
+
+		return $hitId;
+	}
+
+	public function getConnection() {
+		return $this->connection;
+	}
+
+	public function getMq() {
+		return $this->mq;
+	}
+
+	public function getMailer() {
+		return $this->mailer;
+	}
+
+	public function getSessionId() {
+		return $this->sessionId;
+	}
+
+	public function getHitId() {
+		return $this->hitId;
+	}
+
+	public function setVar($key, $value) {
+		$_SESSION[$key] = $value;
+	}
+
+	public function getVar($key) {
+		if (empty($_SESSION[$key])) {
+			return null;
+		}
+		else {
+			return $_SESSION[$key];
+		}
+	}
+
+	public function removeVar($key) {
+		unset($_SESSION[$key]);
+	}
+
+	public function isSignedOn() {
+		$userId = $this->getVar('user-id');
+
+		return (($userId != null) && ($userId != -1))? true: false;
+	}
+
+	public function isMobile() {
+		global $_SERVER;
+
+		$useragent = $_SERVER['HTTP_USER_AGENT'];
+
+		if (preg_match('/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows (ce|phone)|xda|xiino/i',$useragent)||preg_match('/1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i',substr($useragent,0,4)))
+			return true;
+		else
+			return false;
+	}
+
+	public function isApp() {
+		global $_SERVER;
+
+
+		$found = false;
+		$ind = 0;
+		$this->doLog('test');
+
+		while (!$found && $ind < count(Session::$tokenheaders)) {
+			$header = Session::$tokenheaders[$ind];
+
+			$this->doLog($header);
+
+			if (array_key_exists($header, $_SERVER) && !empty($_SERVER[$header])) {
+				$found = true;
+				$this->doLog('yes');
+			}
+			else {
+				$ind++;
+				$this->doLog('no');
+			}
+		}
+
+		return ($found);
+	}
+
+	public function getUrlPrefix($force = null) {
+
+		if ($force === true) {
+			return $this->url->toString(Url::TOK_PORT);
+		}
+
+		if ($force === false) {
+			return '';
+		}
+
+		if ($this->isApp()) {
+			return $this->url->toString(Url::TOK_PORT);
+		}
+		else {
+			return '';
+		}
+	}
+
+	public function createToken() {
+		global $_SESSION;
+		
+		$header = base64_encode(json_encode(array(
+			'typ'	=> 'JWT',
+			'alg'	=> 'SH256'
+		), JSON_UNESCAPED_UNICODE));
+
+		$payload = base64_encode(json_encode(array(
+			'version'		=> '1.0.1',
+			'user-id'		=> $_SESSION['user-id'],
+			'name'			=> $_SESSION['name'],
+			'user-email'		=> $_SESSION['user-email'],
+			'session-id'		=> session_id(),
+			'expire'		=> '2019-06-01 00:00:00'
+		), JSON_UNESCAPED_UNICODE));
+
+		$signature = base64_encode("{$header}.{$payload}");
+
+		$token = "{$header}.{$payload}.{$signature}";
+
+		return $token;
+	}
+
+	public function getRequestedWith() {
+		global $_SERVER;
+
+		if (array_key_exists('HTTP_REQUESTED_WITH', $_SERVER))
+			return $_SERVER['HTTP_REQUESTED_WITH'];
+		else
+			return null;
+	}
+
+	public function getLayout() {
+		return ($this->isMobile())? 'mobile': 'desktop';
+	}
+}

@@ -1,0 +1,118 @@
+:root {
+	--navbar-bg-color: #232323;
+	--navbar-text-color: #FFFFFF;
+
+	--bg-color-primary: black;
+	--bg-color-secondary: #E5E5E5;
+
+	--width-control: 70%;
+
+	--footer-bg-color: #232323;
+	--footer-margin: 50px;
+
+	--btn-bg-color: none;
+	--btn-bg-color-hover: #FFFFFF;
+}
+
+body {
+	padding: 0;
+	margin: 0;
+}
+
+* {
+	padding: 0;
+	margin: 0;
+}
+
+div.container {
+	display: grid;
+	position: relative;
+	margin: 0;
+	margin-bottom: var(--footer-margin);
+}
+
+div.section {
+	height: 835px;
+	border: none;
+}
+
+.text-align-center {
+	text-align: center;
+}
+
+.text-white {
+	color: white;
+}
+
+.text-black {
+	color: black;
+}
+
+.text-title {
+	font-size: 1.9rem;
+	font-weight: 400;
+	padding: 0;
+}
+
+.text-info {
+	font-size: 1rem;
+	font-weight: 200;
+	margin-top: 5px;
+}
+
+.bg-color-black {
+	background-color: black;
+}
+
+.bg-color-white {
+	background-color: white;
+}
+
+.bg-color-primary {
+	background-color: var(--bg-color-primary);
+}
+
+.bg-color-secondary {
+	background-color: var(--bg-color-secondary);
+}
+
+.btn {
+	margin: 20px 0 0 0;
+	padding: 4px 40px;
+	border-radius: 30px;
+	border-style: solid;
+	border-width: 1px;
+	border-color: black;
+	background-color: var(--btn-bg-color);
+	cursor: pointer;
+}
+
+.btn:hover {
+	background-color: var(--btn-bg-color-hover);
+}
+
+.text-title {
+	margin-bottom: 10px;
+}
+
+.section-title {
+	display: grid;
+	justify-items: center;
+}
+
+.title-center {
+	justify-items: center;
+}
+
+.title-left {
+	justify-items: left;
+}
+
+.title-right {
+	justify-items: right;
+}
+
+.section-title-control {
+	display: grid;
+	width: var(--width-control);
+}

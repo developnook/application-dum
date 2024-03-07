@@ -1,0 +1,64 @@
+div#container-wheretobuy > div:nth-child(1).section > div:nth-child(1) {
+	display: grid;
+	grid-template-columns: 1fr;
+	width: calc(var(--width-control) - 10%);
+	max-width: calc(var(--max-width-control) - 200px);
+}
+
+div#container-wheretobuy > div:nth-child(1).section > div:nth-child(1) {
+	display: grid;
+	justify-content: center;
+}
+
+div#container-wheretobuy > div:nth-child(1).section > div:nth-child(1) > div:nth-child(1) > p:nth-child(1){
+	text-align: center;
+	font-size: var(--font-size-title);
+	margin-bottom: 20px;
+}
+
+div#container-wheretobuy > div:nth-child(1).section > div:nth-child(1) > div:nth-child(1) > p:nth-child(2) {
+	text-align: center;
+	font-size: var(--font-size-normal);
+}
+
+div#container-wheretobuy > div:nth-child(1).section > div:nth-child(1) > div:nth-child(2) {
+	display: grid;
+	position: relative;
+	grid-auto-flow: column;
+	grid-template-columns: repeat(7, 1fr);
+	column-gap: 50px;
+	margin: 50px 0;
+}
+
+div#container-wheretobuy > div:nth-child(1).section > div:nth-child(1) > div:nth-child(2) > a > img {
+	display: block;
+	width: 100%;
+	min-width: 50px;
+	max-width: 100px;
+	cursor: pointer;
+}
+
+div#container-wheretobuy > div:nth-child(1).section > div:nth-child(1) > div:nth-child(3) {
+	display: grid;
+	position: relative;
+}
+
+div#container-wheretobuy > div:nth-child(1).section > div:nth-child(1) > div:nth-child(3) > img:nth-child(1) {
+	display: block;
+	width: 100%;
+}
+
+@media screen and (max-width: 940px) {
+	div#container-wheretobuy > div:nth-child(1).section {
+		height: auto;
+	}
+
+	div#container-wheretobuy > div:nth-child(1).section > div:nth-child(1) {
+		margin-top: 50px;
+	}
+
+	div#container-wheretobuy > div:nth-child(1).section > div:nth-child(1) > div:nth-child(2) {
+		grid-auto-flow: unset;
+		grid-template-columns: repeat(3, 1fr);
+	}
+}

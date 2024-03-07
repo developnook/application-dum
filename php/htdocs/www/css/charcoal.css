@@ -1,0 +1,78 @@
+div#container-charcoal > div.section {
+	height: auto;
+}
+
+div#container-charcoal > div.section:nth-child(1) > div.section-img > img:nth-child(1) {
+	display: block;
+	width: 50%;
+}
+
+div#container-charcoal > div.section:nth-child(2) {
+	padding: 80px 0;
+}
+
+div#container-charcoal > div.section:nth-child(2) > div.section-info {
+	justify-items: center;
+}
+
+div#container-charcoal > div.section:nth-child(2) > div.section-info > p {
+	font-size: var(--font-size-normal);
+	margin-bottom: 20px;
+}
+
+div#container-charcoal > div.section:nth-child(2) > div.section-info > p:nth-child(1) {
+	font-size: var(--font-size-title);
+}
+
+div#container-charcoal > div.section:nth-child(2) > div.section-info > span:nth-child(3) {
+	height: 1px;
+	width: 80px;
+	background: linear-gradient(to right, var(--bg-color-white), dimgray);
+	margin-bottom: 10px;
+}
+
+div#container-charcoal > div.section:nth-child(2) > div.section-info > div:nth-child(7) {
+	display: block;
+	margin-bottom: 20px;
+	text-align: center;
+}
+
+div#container-charcoal > div.section:nth-child(2) > div.section-info > div:nth-child(7) > img:nth-child(1) {
+	display: inline-block;
+	width: 60%;
+}
+
+div#container-charcoal > div.section:nth-child(2) > div.section-info > div:nth-child(11) {
+	display: grid;
+	align-items: center;
+	grid-template-columns: 1fr 1fr;
+	width: 100%;
+}
+
+div#container-charcoal > div.section:nth-child(2) > div.section-info > div:nth-child(11) > div:nth-child(1) {
+	display: grid;
+}
+
+div#container-charcoal > div.section:nth-child(2) > div.section-info > div:nth-child(11) > div:nth-child(1) > p:nth-child(1) {
+	font-size: var(--font-size-title);
+}
+
+div#container-charcoal > div.section:nth-child(2) > div.section-info > div:nth-child(11) > div:nth-child(1) > p:nth-child(2) {
+	font-size: var(--font-size-normal);
+	font-weight: 300;
+}
+
+div#container-charcoal > div.section:nth-child(2) > div.section-info > div:nth-child(11) > div:nth-child(2) {
+	display: grid;
+	grid-template-columns: 40px 40px 40px;
+	column-gap: 10px;
+	justify-content: end;
+}
+
+div#container-charcoal > div.section:nth-child(2) > div.section-info > div:nth-child(11) > div:nth-child(2) > a > img {
+	display: block;
+	cursor: pointer;
+	width: 100%;
+	min-width: 25px;
+	max-width: 35px;
+}

@@ -1,0 +1,21 @@
+D/DatabaseConnectors////
+D/admin////
+D/TeraWurflRemoteClient////
+D/data////
+D/TeraWurflXMLParsers////
+D/UserAgentMatchers////
+D/TeraWurflUtils////
+/COPYING/1.1/Thu Dec 19 13:45:27 2013//
+/README/1.1/Thu Dec 19 13:45:27 2013//
+/TeraWurfl.php/1.1/Thu Dec 19 13:45:28 2013//
+/TeraWurflConfig.php.example/1.1/Thu Dec 19 13:45:29 2013//
+/TeraWurflLoader.php/1.1/Thu Dec 19 13:45:29 2013//
+/TeraWurflWebservice.php/1.1/Thu Dec 19 13:45:29 2013//
+/UserAgentFactory.php/1.1/Thu Dec 19 13:45:29 2013//
+/UserAgentUtils.php/1.1/Thu Dec 19 13:45:29 2013//
+/WurflConstants.php/1.1/Thu Dec 19 13:45:29 2013//
+/WurflSupport.php/1.1/Thu Dec 19 13:45:30 2013//
+/check_wurfl.php/1.1/Thu Dec 19 13:45:30 2013//
+/test_usage.php/1.1/Thu Dec 19 13:45:30 2013//
+/webservice.php/1.1/Thu Dec 19 13:45:30 2013//
+/TeraWurflConfig.php/1.5/Wed Feb 10 12:59:05 2016//

@@ -1,0 +1,458 @@
+<?php
+
+require_once('com/moserv/log/logger.php');
+require_once('com/moserv/net/http.php');
+require_once('com/moserv/net/session.php');
+require_once('com/moserv/sql/connection.php');
+require_once('com/moserv/wap/wap-media.php');
+require_once('com/moserv/util/web.php');
+
+class MoSender {
+
+	const stat_ini = 0;
+	const stat_snt = 1;
+	const stat_err = 2;
+
+	protected $session;
+	protected $requester;
+
+	protected $shortcode;
+	protected $ivrCode;
+	protected $validateCode;
+	protected $text;
+	protected $affiliateId;
+	protected $clickId;
+
+	public function __construct() {
+		$this->session =
+		$this->requester = null;
+
+		$this->shortcode =
+		$this->ivrCode =
+		$this->validateCode =
+		$this->text = '';
+		$this->affiliateId = 1;
+	}
+
+	public function setSession($session) {
+		$this->session = $session;
+	}
+
+	public function setShortcode($shortcode) {
+		$this->shortcode = $shortcode;
+	}
+
+	public function setIvrCode($ivrCode) {
+		$this->ivrCode = $ivrCode;
+	}
+
+	public function setValidateCode($validateCode) {
+		$this->validateCode = $validateCode;
+	}
+
+	public function setText($text) {
+		$this->text = $text;
+	}
+
+	public function setAffiliateId($affiliateId) {
+		$this->affiliateId = $affiliateId;
+	}
+
+	public function setClickId($clickId) {
+		$this->clickId = $clickId;
+	}
+
+	public function getContent() {
+		return null;
+	}
+
+	public function getUrl() {
+		return '';
+	}
+
+	public function getRequester() {
+		return $this->requester;
+	}
+
+	public function execute() {
+		$url = $this->getUrl();
+		$method = $this->getMethod();
+		$content = $this->getContent();
+		$contentType = $this->getContentType();
+
+		Logger::$logger->info("api request: [ url=$url; method=$method; content=$content ]");
+
+		$this->requester = $requester = new HttpRequester();
+		$headers = $requester->getHeaders();
+
+		$requester->setUrl($url);
+		$requester->setMethod($method);
+
+		if ($content != null)
+			$requester->setContentData($content);
+
+		if ($contentType != null)
+			$headers->add('content-type', $contentType);
+
+		$requester->execute();
+
+		$response = $requester->getResponse();
+
+		$code = $response->getCode();
+		$content = $response->getContent();
+
+
+		Logger::$logger->info("api response: [ code=$code; content=$content ]");
+
+		return $code;
+	}
+
+	public function getMethod() {
+		return HttpRequester::MTHD_GET;
+	}
+
+	public function getContentType() {
+		return null;
+	}
+}
+
+class CdgWapAoc extends MoSender {
+
+	public function execute() {
+		$params = http_build_query(
+			array(
+				'cmd' => 'exp',
+				'ch' => 'WAP',
+				'SN' => "{$this->shortcode}{$this->ivrCode}",
+				'spsID' => $this->clickId,
+				'spName' => 707, # cp-id
+				'cct' => 10,
+				'cURL' => Web::curPageUrl(false) . '/cdg-stat.exe.php'
+			)
+		);
+
+		$url = "http://ss1.mobileLIFE.co.th/wis/wap?$params";
+
+		header("location: $url");
+		exit;
+	}
+
+	public static function updateStatus($msisdn, $tid, $spsid, $status, $reason) {
+		Logger::$logger->info("cdg wap aoc: [ msisdn=$msisdn, spsid=$spsid, tid=$tid, status=$status, reason=$reason ]");
+	}
+}
+
+
+class LegacyMoSender extends MoSender {
+
+	public function getUrl() {
+		$url = 'http://103.246.17.89:2500/legacy-backend/sms'.
+			'?CTYPE=TEXT&'.
+			'&CMD=DLVRMSG'.
+	#		'&TRANSID=00000020029577202'.
+			'&CONTENT=%s'.	# text
+			'&NTYPE=GSM'.	# juz always do this like gsm :P
+			'&TO=%s'.	# shortcode
+			'&FROM=%s'.	# msisdn
+			'&FET=SMS'.
+			'&CODE=REQUEST'.
+			'&PROXY_ID=%s'.
+			'&PROXY_MESSAGE_ID=%s'.
+			'&CHANNEL_TYPE_ID=%d';
+
+		return sprintf(
+			$url,
+
+			urlencode($this->text),
+			urlencode($this->shortcode),
+			urlencode($this->session->getMsisdn()),
+			urlencode($this->affiliateId),
+			urlencode($this->clickId),
+			WapMedia::ctype_wap_dir
+		);
+	}
+}
+
+class CpaMoSender extends MoSender {
+
+	public function getContent() {
+
+		$xml =
+			'<?xml version="1.0" encoding="UTF-8" ?>'.
+			'<cpa-mobile-request>'.
+	#			'<txid>48364647441</txid>'.
+				'<authentication>'.
+					'<user>dtac</user>'.
+					'<password>T_sTonE</password>'.
+				'</authentication>'.
+				'<destination>'.
+					'<msisdn>%s</msisdn>'.			# shortcode
+					'<serviceid>%s</serviceid>'.		# shortcode
+				'</destination>'.
+				'<originator>'.
+					'<msisdn>%s</msisdn>'.			# msisdn
+				'</originator>'.
+				'<wap>'.
+					'<proxy-id>%d</proxy-id>'.			# affiliateId
+					'<proxy-message-id>%s</proxy-message-id>'.		# clickId
+					'<channel-type-id>%d</channel-type-id>'.	# channel type id
+					'<from>%s</from>'.			# shortcode
+					'<content-id>%s%s</content-id>'.	# shortcode ivrCode
+				'</wap>'.
+				'<message>'.
+					'<header>'.
+						'<timestamp>%s</timestamp>'.	# timestamp yyyymmddhhmiss
+					'</header>'.
+					'<sms>'.
+						'<msg>%s</msg>'.		# text
+						'<msgtype>E</msgtype>'.
+						'<encoding>0</encoding>'.
+					'</sms>'.
+				'</message>'.
+				'<startCallDateTime>%s</startCallDateTime>'.	# timestamp yyyymmddhhmiss
+			'</cpa-mobile-request>';
+
+		$timestamp = date('YmdHis');
+
+		return sprintf(
+			$xml,
+
+			$this->shortcode,
+			$this->shortcode,
+			$this->session->getMsisdn(),
+			$this->affiliateId,
+			$this->clickId,
+			WapMedia::ctype_wap_dir,
+			$this->shortcode,
+			$this->shortcode,
+			$this->ivrCode,
+			$timestamp,
+			$this->text,
+			$timestamp
+		);
+	}
+
+	public function getUrl() {
+		return 'http://103.246.17.89:3000/dtac-backend/sms';
+	}
+
+	public function getMethod() {
+		return HttpRequester::MTHD_POST;
+	}
+
+	public function getContentType() {
+		return 'text/xml';
+	}
+}
+
+class ThirdPartySender extends MoSender {
+
+	protected $serviceId;
+
+	public function __construct() {
+		parent::__construct();
+
+		$this->serviceId = null;
+	}
+
+	public function setServiceId($serviceId) {
+		$this->serviceId = $serviceId;
+	}
+	
+	public function getContent() {
+		$xml =
+			'<?xml version="1.0" encoding="UTF-8"?>'.
+			'<request type="mo" id="%s">'.			# uuid
+				'<body>'.
+					'<number>%s</number>'.		# msisdn
+					'<service-id>%s</service-id>'.	# service id
+					'<ud>%s</ud>'.			# text (keyword)
+					'<authorization>aLpEI46oLuwakq/G7PGGIfSWSdpy4rdm</authorization>'.
+				'</body>'.
+			'</request>';
+
+		return sprintf(
+			$xml,
+
+			$this->clickId,
+			$this->session->getMsisdn(),
+			$this->serviceId,
+			$this->text
+		);
+	}
+
+	public function execute() {
+		$code = parent::execute();
+	
+		$content = $this->requester->getResponse()->getContent();
+		Logger::$logger->info("ThirdPartySender getReturn: [ code=$code; content=$content ]");
+
+		if ($code == 200) {
+
+			$xml = new SimpleXMLElement($content);
+
+			$xstatus = $xml->xpath("/response/body/status");
+			$xdesc   = $xml->xpath("/response/body/description");
+
+			$status = $xstatus[0][0];
+			$desc   = $xdesc[0][0];
+	
+			Logger::$logger->info("ThirdPartySender response: [ code=$code; status=$status; description=$desc ]");
+			return ($status == 0 && strtolower($desc) == "success")? 200: 0;
+		}
+
+		return $code;
+	}
+
+	public function getUrl() {
+		return 'http://203.151.233.215/partner/true3api.svc/';
+	}
+
+	public function getMethod() {
+		return HttpRequester::MTHD_POST;
+	}
+
+	public function getContentType() {
+		return 'text/xml';
+	}
+}
+
+class CssMoSender extends MoSender {
+
+	protected $serviceId;
+
+	public function __construct() {
+		parent::__construct();
+
+		$this->serviceId = null;
+	}
+
+	public function getServiceId() {
+		if ($this->serviceId != null)
+			return $this->serviceId;
+
+		$connection = $this->session->getConnection();
+
+		$query = $connection->createQuery("
+			select
+				o.telco_service_id
+			from message_service.incoming_channel i
+				join message_service.outgoing_channel o using (service_id, telco_id)
+			where i.telco_id = ?
+			and i.shortcode = ?
+			and ? rlike i.pattern
+			and i.channel_type_id = ?
+			and o.sms_cat_id = 2
+			and o.price > 0
+			limit 1
+		");
+
+		$query->setInt(1, $this->session->getTelcoId());
+		$query->setString(2, $this->shortcode);
+		$query->setString(3, $this->text);
+		$query->setInt(4, WapMedia::ctype_wap_dir); # always wap direct sub
+
+		$query->open();
+
+		$rows = $query->getResultArray();
+
+		$this->serviceId = (count($rows) > 0)? $rows[0]['telco_service_id']: "0";
+
+		return $this->serviceId;
+	}
+
+
+	public function getContent() {
+		$xml =
+			'<?xml version="1.0" encoding="ISO-8859-1"?>'.
+			'<message id="%s">'.	# click id
+				'<sms type="mo">'.
+					'<retry count="0" max="0"/>'.
+					'<destination messageid="%s">'.	# click id
+						'<address>'.
+							'<number type="abbreviated">%s</number>'.	# shortcode
+						'</address>'.
+					'</destination>'.
+					'<source>'.
+						'<address>'.
+							'<number type="international">%s</number>'.	# msisdn
+						'</address>'.
+					'</source>'.
+					'<ud type="text">%s</ud>'.	# text
+					'<scts>%s</scts>'. # timestamp yyyy-mm-ddThh:mi:ssZ
+					'<service-id>%s</service-id>'.	# service id
+				'</sms>'.
+				'<from>wap</from>'.
+				'<to>WapAdapter::%s</to>'.	# service id
+				'<proxy-id>%s</proxy-id>'.	# affiliate id
+				'<proxy-message-id>%s</proxy-message-id>'.	# click id
+				'<channel-type-id>%d</channel-type-id>'.	# channel type id
+			'</message>';
+
+		$timestamp = date('Y-m-d').'T'.date('H:i:s').'Z';
+		$serviceId = $this->getServiceId();
+
+		return sprintf(
+			$xml,
+
+			$this->clickId,
+			$this->clickId,
+			$this->shortcode,
+			$this->session->getMsisdn(),
+			$this->text,
+			$timestamp,
+			$serviceId,
+			$serviceId,
+			$this->affiliateId,
+			$this->clickId,
+			WapMedia::ctype_wap_dir
+		);
+	}
+
+	public function execute() {
+
+		$caller = new ThirdPartySender();
+
+		$caller->setSession($this->session);
+		$caller->setShortcode($this->shortcode);
+		$caller->setIvrCode($this->ivrCode);
+		$caller->setValidateCode($this->validateCode);
+		$caller->setText($this->text);
+		$caller->setAffiliateId($this->affiliateId);
+		$caller->setClickId($this->clickId);
+		$caller->setServiceId($this->getServiceId());
+
+		if (($code = $caller->execute()) != 200 ) {
+			return $code;
+		}
+
+		return parent::execute();
+	}
+
+	public function getMethod() {
+		return HttpRequester::MTHD_POST;
+	}
+
+	public function getContentType() {
+		return 'text/xml';
+	}
+}
+
+
+class TmvMoSender extends CssMoSender {
+
+	public function getUrl() {
+		return 'http://103.246.17.89:4000/truemove-backend/sms';
+	}
+
+}
+
+class TmhMoSender extends CssMoSender {
+
+	public function getUrl() {
+		return 'http://103.246.17.89:5000/truemoveh-backend/sms';
+	}
+
+}
+
+?>

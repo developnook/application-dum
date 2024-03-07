@@ -1,0 +1,4 @@
+RewriteEngine On
+
+RewriteCond %{REQUEST_URI} /i/[0-9]+$
+RewriteRule ([0-9]+)$ /i/index.php?index=$1 [L,B]

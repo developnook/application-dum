@@ -1,0 +1,4 @@
+RewriteEngine On
+
+RewriteCond %{REQUEST_URI} /n/[^/]+$
+RewriteRule ([^/]+)$ /n/index.php?value=$1 [L,B]

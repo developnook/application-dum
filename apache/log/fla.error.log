@@ -1,0 +1,10 @@
+[Wed Jan 03 18:19:40.391359 2024] [ssl:warn] [pid 1:tid 140629201210120] AH01909: dum-toothpaste.com:443:0 server certificate does NOT include an ID which matches the server name
+[Wed Jan 03 18:19:40.400519 2024] [ssl:warn] [pid 1:tid 140629201210120] AH01909: dum-toothpaste.com:443:0 server certificate does NOT include an ID which matches the server name
+[Wed Jan 03 18:25:02.577359 2024] [ssl:warn] [pid 1:tid 140043493731080] AH01909: dum-toothpaste.com:443:0 server certificate does NOT include an ID which matches the server name
+[Wed Jan 03 18:25:02.586878 2024] [ssl:warn] [pid 1:tid 140043493731080] AH01909: dum-toothpaste.com:443:0 server certificate does NOT include an ID which matches the server name
+[Thu Jan 04 00:14:25.466305 2024] [ssl:warn] [pid 1:tid 139643875220232] AH01909: dum-toothpaste.com:443:0 server certificate does NOT include an ID which matches the server name
+[Thu Jan 04 00:14:25.479262 2024] [ssl:warn] [pid 1:tid 139643875220232] AH01909: dum-toothpaste.com:443:0 server certificate does NOT include an ID which matches the server name
+[Thu Jan 04 00:24:55.372621 2024] [ssl:warn] [pid 1:tid 140453316815624] AH01909: dum-toothpaste.com:443:0 server certificate does NOT include an ID which matches the server name
+[Thu Jan 04 00:24:55.384427 2024] [ssl:warn] [pid 1:tid 140453316815624] AH01909: dum-toothpaste.com:443:0 server certificate does NOT include an ID which matches the server name
+[Thu Jan 04 09:40:28.970083 2024] [ssl:warn] [pid 1:tid 140114467076872] AH01909: dum-toothpaste.com:443:0 server certificate does NOT include an ID which matches the server name
+[Thu Jan 04 09:40:28.979809 2024] [ssl:warn] [pid 1:tid 140114467076872] AH01909: dum-toothpaste.com:443:0 server certificate does NOT include an ID which matches the server name

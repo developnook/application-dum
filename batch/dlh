@@ -1,0 +1,74 @@
+#!/usr/local/php/bin/php
+<?php
+	require_once('/usr/project/moserv-fla/php/class/org/fla/seminar/SeminarConfigurator.php');
+
+	use org\fla\seminar\SMC;
+
+	$smc = new SMC();
+	$logfile = '/usr/project/moserv-fla/apache/log/moo.custom.log';
+
+	$lines = file($logfile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+	$content = file_get_contents($logfile);
+
+#	echo $content;
+
+	preg_match_all(
+		'/'																.
+			'(\d+\.\d+\.\d+\.\d+)'										.
+			' - - '														.
+			'\[(\d{1,2}\/[a-z]{3}\/\d{4}):(\d{2}:\d{2}:\d{2})'		.
+			' '															.
+			'([\+\- ]\d{4})\] "([^ ]+) ([^ ]+) ([^"]+)" (\d+) (\d+)'	.
+		'/i',
+		$content,
+		$matches,
+		PREG_SET_ORDER
+	);
+
+#	print_r($matches);
+
+
+	$months = array('jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec');
+	$pattern = '/^(\d{1,2})\/('.implode('|', $months).')\/(\d{4})$/i';
+
+	foreach ($matches as $match) {
+		list(, $address, $date, $time, $tz, $method, $path, $protocol, $code, $length) = $match;
+
+		if (preg_match($pattern, $date, $selects)) {
+			list(, $dd, $mon, $yyyy) = $selects;
+
+			$date = sprintf('%04d-%02d-%02d', $yyyy, array_search(strtolower($mon), $months) + 1, $dd);
+		}
+
+		if (preg_match('/^\/(qr|n)\/(.+)$/', $path, $selects)) {
+			list(, $cmd, $value) = $selects;
+
+			if (preg_match('/^(%[0-9a-f]{2})+$/i', $value)) {
+				$name = urldecode($value);
+				$ind = 0;
+				$found = false;
+
+				while (!$found && $ind < count(SMC::$committees)) {
+
+					$committee = SMC::$committees[$ind];
+
+#					echo "{$committee['name']} -- {$name}\t";
+
+					if (preg_match("/^{$name}/", $committee['name'])) {
+						$value = $name = $committee['name'];
+
+						$found = true;
+					}
+					else
+						$ind++;
+				}
+			}
+			elseif (preg_match('/^(\d+)(\?.*)?$/', $value, $selects)) {
+				list(, $number, ) = $selects;
+
+				$value = SMC::$tickets[intval($number, 10)]['name'];
+			}
+
+			printf("%s\t%s\t%s\t1\t%s\n", $date, $time, $cmd, $value);
+		}
+	}

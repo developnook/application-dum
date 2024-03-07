@@ -1,0 +1,90 @@
+div#footer {
+	display: grid;
+	/* 
+	clear: both;
+	position: relative;
+	height: 51px;
+	margin-top: -50px;
+	margin-bottom: 0; */
+	background-color: var(--footer-bg-color);
+	color: var(--navbar-text-color);
+
+	/* position: relative; */
+	position: absolute;
+	height: 50px;
+	bottom: 0;
+	width: 100%;
+}
+
+div#footer > div.footer-control {
+	display: grid;
+	position: relative;
+	width: var(--width-control);
+	max-width: var(--max-width-control);
+	left: 50%;
+	grid-template-columns: 50px 1fr 120px;
+	transform: translate(-50%, 0);
+}
+
+div#footer > div.footer-control > div:nth-child(1),
+div#footer > div.footer-control > div:nth-child(2),
+div#footer > div.footer-control > div:nth-child(3) {
+	display: grid;
+	align-content: center;
+}
+
+div#footer > div.footer-control > div:nth-child(1) {
+	font-family: 'Prompt', sans-serif;
+	font-size: 1.8rem;
+	font-weight: 200;
+	justify-content: start;
+}
+
+div#footer > div.footer-control > div:nth-child(2) {
+	font-family: 'Kanit', sans-serif;
+	font-size: 0.7rem;
+	font-weight: 200;
+	justify-content: center;
+	text-align: center;
+}
+
+div#footer > div.footer-control > div:nth-child(3) {
+	justify-content: end;
+}
+
+div#footer > div.footer-control > div:nth-child(1) > div {
+	display: grid;
+	justify-content: start;
+	margin: auto 0;
+}
+
+div#footer > div.footer-control > div:nth-child(3) > div:nth-child(1) {
+	display: grid;
+	position: relative;
+	grid-template-columns: 1fr 1fr 1fr;
+	gap: 10px;
+}
+
+div#footer > div.footer-control > div:nth-child(3) > div:nth-child(1) > a > img {
+	display: block;
+	cursor: pointer;
+	width: 100%;
+	min-width: 15px;
+	max-width: 25px;
+}
+
+
+@media screen and (max-width: 940px) {
+	div#footer > div.footer-control {
+		width: var(--width-control-res);
+		grid-template-columns: 50px 1fr 50px;
+	}
+
+	div#footer > div.footer-control > div:nth-child(2) {
+		font-size: 0.5rem;
+	}
+
+	div#footer > div.footer-control > div:nth-child(3) > div:nth-child(1) {
+		gap: 5px;
+	}
+}

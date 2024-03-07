@@ -1,0 +1,121 @@
+version: '3.9'
+services:
+        memcached:
+                build: ./memcached
+                hostname: "${AMS_PREFIX}-memcached"
+                container_name: "${AMS_PREFIX}-memcached"
+                environment:
+                        - MEMCACHED_MEMORY_LIMIT
+                        - MEMCACHED_THREADS
+                        - MEMCACHED_MAX_CONNECTIONS
+                        - MEMCACHED_TCP_PORT
+                        - MEMCACHED_UDP_PORT
+                        - MEMCACHED_EXTRA_FLAGS
+                        - TZ
+                networks:
+                        - backend
+
+        mariadb:
+                build:
+                        context: ./mariadb
+                        args:
+                                - AMS_GID
+                                - AMS_GROUP
+                                - AMS_UID
+                                - AMS_USER
+                hostname: "${AMS_PREFIX}-mariadb"
+                container_name: "${AMS_PREFIX}-mariadb"
+                environment:
+                        - MARIADB_PASSWORD
+                        - MARIADB_ROOT_PASSWORD
+                        - MARIADB_USER
+                        - MARIADB_PORT
+                        - TZ
+                volumes:
+                        - ./mariadb/conf:/etc/mysql/conf.d
+                        - ./mariadb/data:/var/lib/mysql
+                        - ./mariadb/script:/home/${AMS_USER}/script
+                        - ./mariadb/batch:/home/${AMS_USER}/batch
+                        - ./mariadb/backup:/home/${AMS_USER}/backup
+                        - ./mariadb/log:/var/log/mysql
+                command: --wsrep-new-cluster
+                healthcheck:
+                        test: ["CMD", 'mysqladmin', 'ping', '-h', 'localhost', '-u', 'root', '-p$${MARIADB_ROOT_PASSWORD}']
+                        timeout: 2s
+                        retries: 5
+                networks:
+                        - backend
+
+        php:
+                build:
+                        context: ./php
+                        args:
+                                - AMS_GID
+                                - AMS_GROUP
+                                - AMS_UID
+                                - AMS_USER
+                hostname: "${AMS_PREFIX}-php"
+                container_name: "${AMS_PREFIX}-php"
+                depends_on:
+                        - mariadb
+                        - memcached
+#                        - rabbitmq
+                volumes:
+                        - ./php/batch:/var/www/batch
+                        - ./php/class:/var/www/class
+                        - ./php/conf:/usr/local/etc/php/conf.d
+                        - ./php/htdocs/www:/var/www/html/www
+                        - ./php/lib:/var/www/lib
+                        - ./php/log:/var/www/log
+                        - ./php/session:/var/www/session
+                environment:
+                        - AMS_PREFIX
+                        - HTTPD_HOST
+                        - HTTPD_PORT
+                        - HTTPD_SSL_PORT
+                        - TZ
+                networks:
+                        - backend
+
+        apache:
+                build:
+                        context: ./apache
+                        args:
+                                - AMS_GID
+                                - AMS_GROUP
+                                - AMS_UID
+                                - AMS_USER
+                hostname: "${AMS_PREFIX}-apache"
+                container_name: "${AMS_PREFIX}-apache"
+                depends_on:
+                        - php
+#                        - rabbitmq
+                        - mariadb
+                        - memcached
+                ports:
+                        - ${HTTPD_SSL_PORT}:${HTTPD_SSL_PORT}/tcp
+                        - ${HTTPD_SHORT_SSL_PORT}:${HTTPD_SHORT_SSL_PORT}/tcp
+                environment:
+                        - AMS_PREFIX
+                        - HTTPD_HOST
+                        - HTTPD_SSL_PORT
+                        - HTTPD_SHORT_HOST
+                        - HTTPD_SHORT_SSL_PORT
+                        - TZ
+                volumes:
+                        - ./apache/cert:/usr/local/apache2/cert
+                        - ./apache/conf:/usr/local/apache2/conf/conf.d
+                        - ./apache/log:/usr/local/apache2/logs
+                        - ./php/htdocs:/var/www/html
+                        - ./php/conf:/var/php/conf
+                networks:
+                        - frontend
+                        - backend
+
+networks:
+        frontend:
+                name: "${AMS_PREFIX}-frontend"
+#                external: true
+        backend:
+                name: "${AMS_PREFIX}-backend"
+#                external: true

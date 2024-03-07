@@ -1,0 +1,104 @@
+div.section-home {
+	display: grid;
+	position: relative;
+
+	font-family: 'Prompt', sans-serif;
+}
+
+div.section-home > div.section-img-control {
+	display: grid;
+	justify-content: center;
+}
+
+div.section-home > div.section-img-control-manual {
+	display: grid;
+	position: absolute;
+	width: 60%;
+	left: 0;
+	bottom: 0;
+}
+
+div.section-home > div.section-img-control > img,
+div.section-home > div.section-img-control-manual > img {
+	width: 100%;
+}
+
+div.section-home > div.section-info-control {
+	display: grid;
+	position: absolute;
+	top: 50%;
+}
+
+.info-left {
+	left: 25%;
+	transform: translate(-50%, -50%);
+}
+
+.info-right {
+	left: 80%;
+	transform: translate(-50%, -50%);
+}
+
+div.section-home > div.section-info-control > div.section-info {
+	display: grid;
+	width: 100%;
+}
+
+div.section-home-review,
+div.section-home-where-to-buy {
+	display: grid;
+	position: relative;
+
+	font-family: 'Prompt', sans-serif;
+	padding: 100px 0;
+}
+
+div.section-home-review > div.section-layout,
+div.section-home-where-to-buy > div.section-layout {
+	display: grid;
+	justify-items: center;
+}
+
+div.section-home-review > div.section-layout > div.section-layout-control {
+	display: grid;
+	width: var(--width-control);
+	gap: 3px;
+	grid-template-columns: auto auto auto auto;
+}
+
+div.section-home-review > div.section-layout > div.section-layout-control > div {
+	display: grid;
+}
+
+div.section-home-review > div.section-layout > div.section-layout-control > div > img,
+div.section-home-where-to-buy > div.section-layout > div.section-layout-control > div > img {
+	width: 100%;
+}
+
+div.section-home-where-to-buy > div.section-layout {
+	margin-top: 150px;
+}
+
+div.section-home-where-to-buy > div.section-info-control {
+	display: grid;
+	width: 100%;
+	justify-items: center;
+}
+
+div.section-home-where-to-buy > div.section-info-control > div.section-info {
+	display: grid;
+	width: var(--width-control);
+}
+
+div.section-home-where-to-buy > div.section-layout > div.section-layout-control {
+	display: grid;
+	width: var(--width-control);
+	gap: 3px;
+	justify-items: center;
+	grid-template-columns: auto auto auto auto auto auto auto;
+}
+
+div.section-home-where-to-buy > div.section-layout > div.section-layout-control > div {
+	display: grid;
+	width: 60%;
+}

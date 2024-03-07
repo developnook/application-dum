@@ -1,0 +1,1150 @@
+<?php
+
+require_once('com/moserv/log/logger.php');
+require_once('com/moserv/net/session.php');
+require_once('com/moserv/net/http.php');
+require_once('com/moserv/net/url.php');
+require_once('com/moserv/sql/connection.php');
+require_once('com/moserv/util/web.php');
+require_once('com/moserv/wap/wap-tag.php');
+require_once('com/moserv/wap/wap-sub.php');
+require_once('com/moserv/wap/block.php');
+require_once('com/moserv/xml/model.php');
+
+class ClickTag {
+
+	private $hitId;
+	private $clickTagId;
+
+	private $text;
+	private $dirText;
+	private $smsText;
+	private $ivrText;
+	private $aocText;
+
+	private $shortcode;
+	private $keyword;
+	private $ivrCode;
+	private $channelTypeId;
+
+	private $url;
+
+	public function __construct() {
+		$this->text = 'Click';
+	}
+
+	public function setHitId($hitId) {
+		$this->hitId = $hitId;
+	}
+
+	public function setClickTagId($clickTagId) {
+		$this->clickTagId = $clickTagId;
+	}
+
+	public function setText($text) {
+		$this->text = $text;
+	}
+
+	public function setDirText($dirText) {
+		$this->dirText = $dirText;
+	}
+
+	
+	public function setSmsText($smsText) {
+		$this->smsText = $smsText;
+	}
+
+	public function setIvrText($ivrText) {
+		$this->ivrText = $ivrText;
+	}
+
+	public function setAocText($aocText) {
+		$this->aocText = $aocText;
+	}
+
+
+	public function setShortcode($shortcode) {
+		$this->shortcode = $shortcode;
+	}
+
+	public function setKeyword($keyword) {
+		$this->keyword = $keyword;
+	}
+
+	public function setIvrCode($ivrCode) {
+		$this->ivrCode = $ivrCode;
+	}
+
+	public function setChannelTypeId($channelTypeId) {
+		$this->channelTypeId = $channelTypeId;
+	}
+
+	public function setUrl($url) {
+		$this->url = $url;
+	}
+
+	public function getText() {
+		return $this->text;
+	}
+
+	public function getFullUrl() {
+		$fs = (strpos($this->url, '?') === false)? '?': '&';
+
+		return "{$this->url}{$fs}h={$this->hitId}&t={$this->clickTagId}&_=1";
+	}
+
+	public function getTags() {
+		$ttt = 'Click';
+
+		switch ($this->channelTypeId) {
+			case WapMedia::ctype_wap_dir:
+				$text = $this->dirText;
+			break;
+
+			case WapMedia::ctype_sms:
+			case WapMedia::ctype_wap_sms:
+				$text = $this->smsText;
+			break;
+
+			case WapMedia::ctype_ivr:
+			case WapMedia::ctype_wap_ivr:
+				$text = $this->ivrText;
+			break;
+
+			case WapMedia::ctype_wap_aoc:
+				$text = $this->aocText;
+			break;
+		}
+
+		Logger::$logger->info("text => $ttt $this->channelTypeId " . (6 == $this->channelTypeId));
+
+		$search = array('{{shortcode}}', '{{keyword}}', '{{ivrcode}}');
+		$replace = array($this->shortcode, $this->keyword, $this->ivrCode);
+
+		$text = str_replace($search, $replace, $text);
+
+		$tokens = preg_split('/(\[\[[^\]]+\]\])/', $text, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
+
+		
+		Logger::$logger->info("token array " . print_r($tokens, true));
+
+		$tags = new XmlTagList();
+
+		foreach ($tokens as $token) {
+			$tag = new CustomTag();
+
+			Logger::$logger->info("token $token");
+
+			if (preg_match('/^\[\[([^\]]+)\]\]$/', $token, $group)) {
+				$tag->setName('a');
+				$tag->setAttr('proxy', 'no');
+				$tag->setAttr('href', $this->getFullUrl());
+
+				$line = $group[1];
+				Logger::$logger->info("token link $line");
+			}
+			else {
+				$tag->setName('text');
+				$line = $token;
+				Logger::$logger->info("token nolink");
+			}
+
+			$tag->setAttr('br', '0');
+
+			$tag->addTag(new TextTag($line));
+
+			$tags->addTag($tag);
+		}
+
+		return $tags;
+	}
+
+	public function toString($newLine = true) {
+		$tags = $this->getTags();
+#		if ($tags->count() == 0) {
+#			$tags->addTag(new TextTag(''));
+#		}
+
+#		if ($newLine)
+#			$tags->getTag($tags->count() - 1)->setAttr('br', '1');
+
+		return $tags->toString();
+	}
+
+	public function getClickXmlParam() {
+
+#		$wapMedia = $this->wapMedia;
+
+		$hitId = $this->hitId;
+		$clickTagId = $this->clickTagId;
+
+		$list = array(
+			'_' => 1,
+			'h' => $hitId,
+			't' => $clickTagId
+		);
+
+		$params = array();
+
+		foreach ($list as $key => $value) {
+			$params[] = "$key=$value";
+		}
+
+		return implode('&amp;', $params);
+	}
+
+	public function getShortcode() {
+		return $this->shortcode;
+	}
+
+	public function getKeyword() {
+		return $this->keyword;
+	}
+}
+
+
+
+class WapMedia  {
+	const ctype_sms		= 1;
+	const ctype_ivr		= 2;
+	const ctype_wap_dir	= 3;
+	const ctype_wap_sms	= 4;
+	const ctype_wap_ivr	= 5;
+	const ctype_wap_aoc	= 6;
+
+	const inf_unknown	= -1;
+	const inf_mos_css	= 1;
+	const inf_ais_cdg	= 2;
+	const inf_ais_lgc	= 3;
+	const inf_dtc_cpa	= 4;
+	const inf_tmv_css	= 5;
+	const inf_tmh_css	= 6;
+	const inf_dtc_sdp	= 7;
+
+	const cg_wall		= 1;
+	const cg_clip		= 2;
+	const cg_quiz		= 3;
+	const cg_horo		= 4;
+
+	const scat_unk		= -1;           
+	const scat_wel		= 1;
+	const scat_1st		= 2;     	
+	const scat_brc		= 3; 
+	const scat_ret		= 4;
+	const scat_xce		= 5;
+	const scat_wrn		= 6;   
+	const scat_rec  	= 7;
+
+	const default_page = 118;
+	const htdocs = '/usr/project/apache_eth0/http_80/htdocs/m.sabver.com';
+
+	protected $connection;
+	protected $pageId;
+	protected $affiliateId;
+	protected $affiliateName;
+	protected $sexyAllow;
+	protected $campaignId;
+	protected $campaignName;
+	protected $clickTag;
+	protected $priceTag;
+	protected $serviceId;
+	protected $enabled;
+	protected $isSexy;
+	protected $campaignTitle;
+	protected $campaignGroupId;
+	protected $campaignGroupName;
+
+
+	protected $applyText;
+	protected $channelTypeId;
+	protected $pattern;
+	protected $shortcode;
+	protected $keyword;
+	protected $clickUrl;
+
+
+	protected $clickTags;
+	protected $crossSells;
+
+	public function __construct($session, $pageId = WapMedia::default_page) {
+		$this->session = $session;
+		$this->connection = $this->session->getConnection();
+		$this->pageId = $pageId;
+		$this->isSexy = false;
+		$this->campaignId = -1;
+		$this->clickTags = array();
+	}
+
+	public function setClickUrl($clickUrl) {
+		$this->clickUrl = $clickUrl;
+	}
+
+	public function load() {
+		$query = $this->connection->createQuery('
+			select
+				p.page_id,
+				a.affiliate_id,
+				a.affiliate_name,
+				a.sexy_allow,
+				c.campaign_id,
+				c.campaign_name,
+				c.click_tag,
+				c.price_tag,
+				c.campaign_title,
+				c.shortcode,
+				c.service_id,
+				c.enabled,
+				c.sexy,
+				g.campaign_group_id,
+				g.campaign_group_name
+			from page p
+				join affiliate a using (affiliate_id)
+				join campaign c using (campaign_id)
+				join campaign_group g using (campaign_group_id)
+			where page_id = ?
+		');
+
+		$query->setInt(1, $this->pageId);
+
+		$query->open();
+
+		$result = $query->getResultArray();
+
+		Logger::$logger->info(count($result));
+
+		if (count($result) > 0) {
+			$record = $result[0];
+
+			$this->affiliateId		= $record['affiliate_id'];
+			$this->affiliateName		= $record['affiliate_name'];
+			$this->sexyAllow		= ($record['sexy_allow'] != 0);
+			$this->campaignId		= $record['campaign_id'];
+			$this->campaignName		= $record['campaign_name'];
+			$this->clickTag			= $record['click_tag'];
+			$this->priceTag			= $record['price_tag'];
+			$this->shortcode		= $record['shortcode'];
+			$this->serviceId		= $record['service_id'];
+			$this->enabled			= $record['enabled'];
+			$this->isSexy			= ($record['sexy'] != 0);
+			$this->campaignTitle		= $record['campaign_title'];
+			$this->campaignGroupId		= $record['campaign_group_id'];
+			$this->campaignGroupName	= $record['campaign_group_name'];
+
+
+			if ($this->enabled == 0) {
+				Logger::$logger->info("404: $this->pageId : $this->enabled");
+				header('HTTP/1.0 404 Not Found');
+				header('Status: 404 Not Found');
+
+				exit;
+			}
+
+			$this->loadClickTags();
+		}
+	}
+
+	protected function loadClickTags() {
+/*
+		$query = $this->connection->createQuery('
+			select
+				click_tag_id,
+				service_id,
+				text,
+				direct_text,
+				sms_text,
+				ivr_text
+			from click_tag
+			where campaign_id = ?
+			order by rank
+		');
+
+		$query->setInt(1, $this->campaignId);
+		$query->open();
+
+		$result = $query->getResultArray();
+		$this->clickTags = array();
+
+		for ($index = 0; $index < count($result); $index++) {
+			$record = $result[$index];
+
+			$this->clickTags[] = $service = new ClickTag($this);
+
+			$service->setClickTagId($record['click_tag_id']);
+			$service->setServiceId($record['service_id']);
+			$service->setText($record['text']);
+			$service->setDirectText($record['direct_text']);
+			$service->setSmsText($record['sms_text']);
+			$service->setIvrText($record['ivr_text']);
+		}
+*/
+		$query = $this->connection->createQuery('
+			select
+				t.click_tag_id,
+				t.service_id,
+
+				t.text,
+				t.dir_text,
+				t.sms_text,
+				t.ivr_text,
+				t.aoc_text,
+
+				s.shortcode,
+				s.keyword,
+				s.ivr_code
+			from wap.click_tag t
+				join message_service.service s using (service_id)
+			where t.campaign_id = ?
+			order by t.rank
+		');
+
+		$query->setInt(1, $this->campaignId);
+		$query->open();
+
+		$result = $query->getResultArray();
+		$this->clickTags = array();
+		$selector = new ChannelSelector($this->session);
+
+		for ($index = 0; $index < count($result); $index++) {
+			$record = $result[$index];
+
+			$selector->setServiceId($record['service_id']);
+			$selector->setIvrCode($record['ivr_code']);
+
+			$selector->execute();
+
+			$clickTag = new ClickTag();
+
+			$clickTag->setHitId($this->session->getHitId());
+			$clickTag->setClickTagId($record['click_tag_id']);
+			$clickTag->setUrl($this->clickUrl);
+
+			$clickTag->setText($record['text']); # temporary case
+
+			$clickTag->setDirText($record['dir_text']);
+			$clickTag->setSmsText($record['sms_text']);
+			$clickTag->setIvrText($record['ivr_text']);
+			$clickTag->setAocText($record['aoc_text']);
+
+			$clickTag->setShortcode($record['shortcode']);
+			$clickTag->setKeyword($record['keyword']);
+			$clickTag->setIvrCode($record['ivr_code']);
+
+			$clickTag->setChannelTypeId($selector->getChannelTypeId());
+
+
+			$this->clickTags[] = $clickTag;
+		}
+	}
+
+	protected function getCrossSellsQuery($crossSellCount = 5, $shortcode = null) {
+		$query = null;
+
+		switch ($this->campaignGroupId) {
+			case WapMedia::cg_wall:
+			case WapMedia::cg_clip:
+			case WapMedia::cg_horo:
+				$query = $this->connection->createQuery("
+					select
+						p.page_id
+					from page p
+						join campaign c using (campaign_id)
+						join affiliate a using (affiliate_id)
+					where p.affiliate_id = ?
+					and (c.campaign_group_id = 1 or c.campaign_group_id = 2 or c.campaign_group_id = 4)
+					and c.shortcode = ?
+					and c.enabled = 1
+					and p.campaign_id <> ?
+					and (a.sexy_allow <> 0 or c.sexy = 0)
+					order by rand()
+					limit ?
+				");
+
+				$query->setInt(1, $this->affiliateId);
+				$query->setString(2, ($shortcode == null)? $this->shortcode: $shortcode);
+				$query->setInt(3, $this->campaignId);
+				$query->setInt(4, $crossSellCount);
+			break;
+
+			case WapMedia::cg_quiz:
+				$query = $this->connection->createQuery('
+					(
+						select
+							p.page_id
+						from page p
+							join campaign c using (campaign_id)
+							join affiliate a using (affiliate_id)
+						where p.affiliate_id = ?
+						and c.campaign_group_id = 3
+						and c.enabled = 1
+						and p.campaign_id <> ?
+						and (a.sexy_allow <> 0 or c.sexy = 0)
+						order by rand()
+						limit ?
+					)
+
+					union all
+
+					(
+						select
+							p.page_id
+						from page p
+							join campaign c using (campaign_id)
+							join affiliate a using (affiliate_id)
+						where p.affiliate_id = ?
+						and c.campaign_group_id between 1 and 2
+						and c.enabled = 1
+						and p.campaign_id <> ?
+						and (a.sexy_allow <> 0 or c.sexy = 0)
+						order by rand()
+						limit ?
+					)
+				');
+
+				$query->setInt(1, $this->affiliateId);
+				$query->setInt(2, $this->campaignId);
+				$query->setInt(3, 1); # limit only 1
+				$query->setInt(4, $this->affiliateId);
+				$query->setInt(5, $this->campaignId);
+				$query->setInt(6, max(0, $crossSellCount - 1));
+			break;
+		}
+
+		return $query;
+	}
+
+
+	public function loadCrossSells($crossSellCount = 5, $shortcode = null) {
+		$this->crossSells = array();
+
+		if (($query = $this->getCrossSellsQuery($crossSellCount, $shortcode)) != null) {
+			$query->open();
+
+			$result = $query->getResultArray();
+
+
+			for ($index = 0; $index < count($result); $index++) {
+				$record = $result[$index];
+
+				$crossSell = new WapMedia($this->session, $record['page_id']);
+
+				$crossSell->setClickUrl($this->clickUrl);
+
+				 Logger::$logger->info("page_id = {$record['page_id']}");
+
+				$crossSell->load();
+
+				$this->crossSells[] = $crossSell;
+			}
+		}
+
+		return $this->crossSells;
+	}
+
+	public function getSession() {
+		return $this->session;
+	}
+
+	public function getCampaignName() {
+		return $this->campaignName;
+	}
+
+	public function getCampaignTitle() {
+		return $this->campaignTitle;
+	}
+
+	public function getCampaignGroupName() {
+		return $this->campaignGroupName;
+	}
+
+	public function getClickTags() {
+		return $this->clickTags;
+	}
+
+	public function getCrossSells() {
+		return $this->crossSells;
+	}
+
+	public function getBigImage() {
+		$spec = sprintf('/images/wap/b%06d-%s.gif', $this->campaignId, $this->affiliateName);
+		$common = sprintf('/images/wap/b%06d.gif', $this->campaignId);
+
+		return (file_exists(WapMedia::htdocs.$spec))? $spec: $common;
+	}
+
+	public function getSmallImage() {
+		$spec = sprintf('/images/wap/s%06d-%s.gif', $this->campaignId, $this->affiliateName);
+		$common = sprintf('/images/wap/s%06d.gif', $this->campaignId);
+
+		return (file_exists(WapMedia::htdocs.$spec))? $spec: $common;
+	}
+
+	public function getApplyText() {
+		return $this->applyText;
+	}
+
+	public function getChannelTypeId() {
+		return $this->channelTypeId;
+	}
+
+	public function getPattern() {
+		return $this->pattern;
+	}
+/*
+	public function getShortcode() {
+		return $this->shortcode;
+	}
+
+	public function getKeyword() {
+		return $this->keyword;
+	}
+*/
+	public function getPageId() {
+		return $this->pageId;
+	}
+
+	public function getCampaignId() {
+		return $this->campaignId;
+	}
+
+	public function getClickTag() {
+		return $this->clickTag;
+	}
+
+	public function getPriceTag() {
+		return $this->priceTag;
+	}
+}
+
+
+class ChannelSelector {
+
+	private $session;
+	private $connection;
+
+	private $serviceId;
+	private $ivrCode;
+
+	private $interfaceId;
+	private $incomingChannelId;
+	private $channelTypeId;
+
+	public function __construct($session) {
+		$this->session = $session;
+		$this->connection = $session->getConnection();
+
+		$this->serviceId = 0;
+		$this->telcoId = 0;
+		$this->ivrCode = null;
+	}
+
+	public function setServiceId($serviceId) {
+		$this->serviceId = $serviceId;
+	}
+
+	public function setIvrCode($ivrCode) {
+		$this->ivrCode = $ivrCode;
+	}
+
+	protected function createPreferredOrders() {
+		return array(
+			WapMedia::ctype_wap_dir,
+			WapMedia::ctype_wap_aoc,
+			WapMedia::ctype_wap_ivr,
+			WapMedia::ctype_wap_sms
+		);
+	}
+
+	public function execute() {
+		$query = $this->connection->createQuery('set @ctype_wap_dir = ?');
+		$query->setInt(1, WapMedia::ctype_wap_dir);
+		$query->open();
+
+		$query = $this->connection->createQuery('set @ctype_wap_aoc = ?');
+		$query->setInt(1, WapMedia::ctype_wap_aoc);
+		$query->open();
+
+		$query = $this->connection->createQuery('set @ctype_wap_sms = ?');
+		$query->setInt(1, WapMedia::ctype_wap_sms);
+		$query->open();
+
+		$query = $this->connection->createQuery('set @ctype_wap_ivr = ?');
+		$query->setInt(1, WapMedia::ctype_wap_ivr);
+		$query->open();
+
+		$query = $this->connection->createQuery('
+			select
+				i.interface_id,
+				i.incoming_channel_id,
+				i.channel_type_id
+			from message_service.incoming_channel i
+			where i.service_id = ?
+			and i.telco_id = ?
+			and i.enabled = 1
+			and (
+				   (i.channel_type_id = @ctype_wap_dir)
+				or (i.channel_type_id = @ctype_wap_aoc)
+				or (i.channel_type_id = @ctype_wap_sms)
+				or (i.channel_type_id = @ctype_wap_ivr and i.pattern = ?)
+			)
+		');
+
+		$query->setInt(1, $this->serviceId);
+		$query->setInt(2, $this->session->getTelcoId());
+		$query->setString(3, $this->ivrCode);
+
+		Logger::$logger->info("selector execute sql => $this->serviceId," .  $this->session->getTelcoId() . ", $this->ivrCode");
+
+		$query->open();
+		$rows = $query->getResultArray();
+
+		$hash = array();
+
+		for ($ind = 0; $ind < count($rows); $ind++) {
+			$row = $rows[$ind];
+
+			$channelTypeId = $row['channel_type_id'];
+
+			$hash[$channelTypeId] = $row;
+		}
+
+		if (!array_key_exists(WapMedia::ctype_wap_ivr, $hash)) {
+			$hash[WapMedia::ctype_wap_ivr] = array(
+				'interface_id' => -1,
+				'incoming_channel_id' => -1,
+				'channel_type_id' => WapMedia::ctype_wap_ivr
+			);
+		}
+
+
+		$orders = $this->createPreferredOrders();
+		$found = false;
+		$ind = 0;
+
+		while (!$found && $ind < count($orders)) {
+			$key = $orders[$ind];
+
+			if (array_key_exists($key, $hash)) {
+				$row = $hash[$key];
+
+				$this->interfaceId = $row['interface_id'];
+				$this->incomingChannelId = $row['incoming_channel_id'];
+				$this->channelTypeId = $row['channel_type_id'];
+
+				$found = true;
+			}
+			else
+				$ind++;
+		}
+
+		 Logger::$logger->info('selector->execute => ' . $this->channelTypeId);
+	}
+
+	public function getInterfaceId() {
+		return $this->interfaceId;
+	}
+
+	public function getIncomingChannelId() {
+		return $this->incomingChannelId;
+	}
+
+	public function getChannelTypeId() {
+		return $this->channelTypeId;
+	}
+}
+
+
+
+class Click {
+
+	private $session;
+	private $connection;
+	private $hitId;
+	private $clickTagId;
+
+	private $serviceId;
+	private $shortcode;
+	private $keyword;
+	private $ivrCode;
+	private $affiliateId;
+	private $validateCode;
+
+	private $incomingChannelId;
+	private $channelTypeId;
+	private $interfaceId;
+
+	private $clickId;
+
+	public function __construct($session, $hitId, $clickTagId = -1) {
+		$this->session = $session;
+		$this->connection = $session->getConnection();
+		$this->hitId = $hitId;
+		$this->clickTagId = $clickTagId;
+
+		$this->interfaceId = -1;
+		$this->serviceId = -1;
+		$this->incomingChannelId = -1;
+		$this->channelTypeId = WapMedia::ctype_wap_ivr;
+		$this->shortcode = '4707811';
+		$this->keyword = 'c1';
+		$this->ivrCode = '01';
+		$this->affiliateId = 1;
+		$this->validateCode = '';
+	}
+
+	protected function createPreferredOrders() {
+		return array(
+			WapMedia::ctype_wap_dir,
+			WapMedia::ctype_wap_aoc,
+			WapMedia::ctype_wap_ivr,
+			WapMedia::ctype_wap_sms
+		);
+	}
+
+	public function retrieveBasicData() {
+		$query = $this->connection->createQuery('
+			select
+				a.affiliate_id,
+				a.validate_code,
+				c.campaign_id,
+				t.text
+			from hit h
+				join page p using (page_id)
+				join affiliate a using (affiliate_id)
+				join campaign c using (campaign_id)
+				left join click_tag t on t.campaign_id = c.campaign_id and t.click_tag_id = ?
+			where h.hit_id = ?
+		');
+
+		$query->setInt(1, $this->clickTagId);
+		$query->setInt(2, $this->hitId);
+
+		$query->open();
+		$rows = $query->getResultArray();
+
+		if (count($rows) > 0) {
+			$row = $rows[0];
+
+			$this->affiliateId = $row['affiliate_id'];
+			$this->validateCode = $row['validate_code'];
+
+			if (empty($row['text'])) {
+				$this->affiliateId = abs($this->affiliateId) * -1;
+				 Logger::$logger->info('is cross-sell');
+			}
+			else {
+				 Logger::$logger->info('is not cross-sell');
+			}
+		}
+
+		$query = $this->connection->createQuery('
+			select
+				s.service_id,
+				s.shortcode,
+				s.keyword,
+				s.ivr_code
+			from click_tag t
+				join campaign c using (campaign_id)
+				join message_service.service s on t.service_id = s.service_id
+			where t.click_tag_id = ?
+		');
+
+		$query->setInt(1, $this->clickTagId);
+		$query->open();
+
+		$rows = $query->getResultArray();
+
+		if (count($rows) > 0) {
+			$row = $rows[0];
+
+			$this->serviceId = $row['service_id'];
+			$this->shortcode = $row['shortcode'];
+			$this->keyword = $row['keyword'];
+			$this->ivrCode = $row['ivr_code'];
+		}
+	}
+
+
+	public function compute() {
+
+		$selector = new ChannelSelector($this->session);
+
+		$selector->setServiceId($this->serviceId);
+		$selector->setIvrCode($this->ivrCode);
+
+		$selector->execute();
+
+		$this->interfaceId = $selector->getInterfaceId();
+		$this->incomingChannelId = $selector->getIncomingChannelId();
+		$this->channelTypeId = $selector->getChannelTypeId();
+
+/*
+		$query = $this->connection->createQuery('set @ctype_wap_dir = ?');
+		$query->setInt(1, WapMedia::ctype_wap_dir);
+		$query->open();
+
+		$query = $this->connection->createQuery('set @ctype_wap_aoc = ?');
+		$query->setInt(1, WapMedia::ctype_wap_aoc);
+		$query->open();
+
+		$query = $this->connection->createQuery('set @ctype_wap_sms = ?');
+		$query->setInt(1, WapMedia::ctype_wap_sms);
+		$query->open();
+
+		$query = $this->connection->createQuery('set @ctype_wap_ivr = ?');
+		$query->setInt(1, WapMedia::ctype_wap_ivr);
+		$query->open();
+
+		$query = $this->connection->createQuery('
+			select
+				i.interface_id,
+				i.incoming_channel_id,
+				i.channel_type_id
+			from message_service.incoming_channel i
+			where i.service_id = ?
+			and i.telco_id = ?
+			and i.enabled = 1
+			and (
+				   (i.channel_type_id = @ctype_wap_dir)
+				or (i.channel_type_id = @ctype_wap_aoc)
+				or (i.channel_type_id = @ctype_wap_sms)
+				or (i.channel_type_id = @ctype_wap_ivr and i.pattern = ?)
+			)
+		');
+
+		$query->setInt(1, $this->serviceId);
+		$query->setInt(2, $this->session->getTelcoId());
+#		$query->setInt(2, 1); # hard coding
+		$query->setString(3, $this->ivrCode);
+
+		$query->open();
+		$rows = $query->getResultArray();
+		$hash = array();
+
+		for ($ind = 0; $ind < count($rows); $ind++) {
+			$row = $rows[$ind];
+
+			$channelTypeId = $row['channel_type_id'];
+
+			$hash[$channelTypeId] = $row;
+		}
+
+		$orders = $this->createPreferredOrders();
+		$found = false;
+		$ind = 0;
+
+		while (!$found && $ind < count($orders)) {
+			$key = $orders[$ind];
+
+			if (array_key_exists($key, $hash)) {
+				$row = $hash[$key];
+
+				$this->interfaceId = $row['interface_id'];
+				$this->incomingChannelId = $row['incoming_channel_id'];
+				$this->channelTypeId = $row['channel_type_id'];
+
+				$found = true;
+			}
+			else
+				$ind++;
+		}
+*/
+	}
+
+
+	protected function newClickRecord() {
+
+		$query = $this->connection->createQuery('
+			insert into click (
+				hit_id,
+				channel_type_id,
+				incoming_channel_id,
+				click_tag_id
+			)
+			values (
+				?,
+				?,
+				?,
+				?
+			)
+		');
+
+		$query->setInt(1, $this->hitId);
+		$query->setInt(2, $this->channelTypeId);
+		$query->setInt(3, $this->incomingChannelId);
+		$query->setInt(4, $this->clickTagId);
+
+		Logger::$logger->info("motest: hitId=$this->hitId, channelTypeId=$this->channelTypeId, incomingChannelId=$this->incomingChannelId, clickTagId=$this->clickTagId");
+
+		$query->open();
+
+		$this->clickId = $this->connection->lastId();
+
+		return $this->clickId;
+	}
+
+	protected function updateProxyMessageId($proxyMessageId) {
+		$query = $this->connection->createQuery('update click set proxy_message_id = ? where click_id = ?');
+
+		$query->setString(1, $proxyMessageId);
+		$query->setInt(2, $this->clickId);
+
+		$query->open();
+	}
+
+	public function save() {
+		$clickId = $this->newClickRecord();
+
+		$this->updateProxyMessageId($clickId);
+
+		return $clickId;
+	}
+
+	protected function execWapDir($ignoreBlock = false) {
+		$code = 0;
+		$moSender = null;
+
+		Logger::$logger->info("wap-direct - msisdn=".$this->session->getMsisdn().", interfaceId=".$this->interfaceId);
+
+		if (!$ignoreBlock) {
+			$blocker = new WapBlocker($this->session);
+
+			$blocker->setTelcoId($this->session->getTelcoId());
+			$blocker->setMsisdn($this->session->getMsisdn());
+
+			if (($code = $blocker->execute()) != 0) {
+				Logger::$logger->info("wap-direct - msisdn=".$this->session->getMsisdn()." => BLOCKED");
+
+				return 200;
+			}
+		}
+
+		switch ($this->interfaceId) {
+			case WapMedia::inf_ais_lgc: $moSender = new LegacyMoSender(); break;
+			case WapMedia::inf_dtc_cpa:
+			case WapMedia::inf_dtc_sdp:
+				$moSender = new SdpMoSender();
+			break;
+			case WapMedia::inf_tmv_css: $moSender = new TmvMoSender(); break;
+			case WapMedia::inf_tmh_css: $moSender = new TmhMoSender(); break;
+
+#			case WapMedia::inf_ais_cdg: $moSender = new CdgWapAoc(); break;
+			case WapMedia::inf_ais_cdg: $moSender = new CdgWapAocSecure(); break;
+
+		}
+
+		if ($moSender != null) {
+			$moSender->setSession($this->session);
+			$moSender->setShortcode($this->shortcode);
+			$moSender->setIvrCode($this->ivrCode);
+			$moSender->setValidateCode($this->validateCode);
+			$moSender->setText($this->keyword);
+			$moSender->setAffiliateId($this->affiliateId);
+			$moSender->setClickId($this->clickId);
+			$moSender->setServiceId($this->serviceId);
+
+			$code = $moSender->execute();
+		}
+
+
+
+		return $code;
+	}
+
+	protected function execWapAoc() {
+
+
+		$url = new Url();
+		$url->setPath('/aoc.php');
+		$url->setParams(
+			array(
+				'_'	=> 1,
+				'_c'	=> $this->clickId
+			)
+		);
+
+		$url->redirect();
+/*
+		$aoc = null;
+
+		switch ($this->interfaceId) {
+#			case WapMedia::inf_ais_cdg: $aoc = new CdgWapAoc(); break;
+			case WapMedia::inf_ais_cdg: $aoc = new CdgWapAocSecure(); break;
+		}
+
+		if ($aoc != null) {
+			$aoc->setSession($this->session);
+			$aoc->setShortcode($this->shortcode);
+			$aoc->setIvrCode($this->ivrCode);
+			$aoc->setValidateCode($this->validateCode);
+			$aoc->setText($this->keyword);
+			$aoc->setAffiliateId($this->affiliateId);
+			$aoc->setClickId($this->clickId);
+
+			$aoc->execute();
+		}
+*/
+	}
+
+	public function execute() {
+		global $_SERVER;
+
+		$this->retrieveBasicData();
+		$this->compute();
+		$this->save();
+
+		$shortcode = $this->shortcode;
+		$keyword = $this->keyword;
+		$ivrCode = $this->ivrCode;
+		$validateCode = $this->validateCode;
+
+
+#		$requester = new HttpRequester();
+#		$requester->setUrl('http://www.google.co.th');
+#		$requester->setMethod(HttpRequester::MTHD_GET);
+#		$requester->execute();
+#		echo $requester->getResponse()->getContent();
+#		echo $requester->getResponse()->getVersion();
+#		exit;
+
+		switch ($this->channelTypeId) {
+			case WapMedia::ctype_wap_dir:
+				if ($this->execWapDir() == 200) {
+
+					$path = dirname($_SERVER['REQUEST_URI']);
+					$url = Web::curPageUrl(false) . $path . '/thanks.php';
+
+#					header("location: http://m.sabver.com/sub/thanks.php");
+					header("location: $url");
+
+#					Logger::$logger->info("redirect - location: http://m.sabver.com/sub/thanks.php");
+					Logger::$logger->info("redirect - location: $url");
+				}
+
+				exit;
+			break;
+
+			case WapMedia::ctype_wap_aoc:
+				$this->execWapAoc();
+
+			break;
+
+			case WapMedia::ctype_wap_sms:
+				header("location: sms:${shortcode}?body=${keyword}");
+
+				Logger::$logger->info("redirect - location: sms:${shortcode}?body=${keyword}");
+
+				exit;
+			break;
+
+			case WapMedia::ctype_wap_ivr:
+				header("location: tel:*${shortcode}${ivrCode}${validateCode}");
+
+				Logger::$logger->info("redirect - location: tel:*${shortcode}${ivrCode}${validateCode}");
+
+				exit;
+			break;
+		}
+	}
+}
+
+?>

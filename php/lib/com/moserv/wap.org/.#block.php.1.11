@@ -1,0 +1,383 @@
+<?php
+
+require_once('com/moserv/log/logger.php');
+require_once('com/moserv/net/session.php');
+require_once('com/moserv/net/url.php');
+require_once('com/moserv/sql/connection.php');
+require_once('com/moserv/wap/wap-media.php');
+
+
+abstract class Blocker {
+
+	const blk_none		= 0x00;
+	const blk_black		= 0x01;
+	const blk_climit	= 0x02;
+	const blk_tlimit	= 0x03;
+	const blk_temp		= 0x04;
+	const blk_lastsub	= 0x05;
+	const blk_hps		= 0x0a;
+
+	protected $session;
+	protected $msisdn;
+	protected $telcoId;
+
+	protected $clickId;
+
+	public function __construct($session) {
+		$this->session = $session;
+		$this->telcoId = WapMedia::telco_unk;
+	}
+
+
+	public function setMsisdn($msisdn) {
+		$this->msisdn = $msisdn;
+	}
+
+	public function setTelcoId($telcoId) {
+		$this->telcoId = $telcoId;
+	}
+
+	public function setClickId($clickId) {
+		$this->clickId = $clickId;
+	}
+
+	protected abstract function doExecute();
+
+	protected function blockLog($code) {
+		$url = new Url();
+		$telco = (WapMedia::$telcos[$this->session->getTelcoId()] == "")? 'nul': WapMedia::$telcos[$this->session->getTelcoId()];
+		$msisdn = ($this->session->getMsisdn() == '')? 'unknown': $this->session->getMsisdn();
+
+		$line = sprintf(
+			"BLOCK T(%s), M(%s) C(%02d) - %s%s",
+				$telco,
+				substr($msisdn, 0, 4).'-'.substr($msisdn, 4, 3).'-'.substr($msisdn, 7),
+				$code,
+				$url->getHost(),
+				$url->getPath()
+		);
+
+		$this->session->takeLog($line);
+	}
+
+	protected function save($code) {
+		if (empty($this->msisdn)) {
+			return;
+		}
+
+		$connection = $this->session->getConnection();
+		$query = $connection->createQuery("
+			insert ignore into wap.block_revisit (
+				msisdn,
+				block_code
+			)
+			values (?, ?)
+		");
+
+		$query->setInt(1, $this->msisdn);
+		$query->setInt(2, $code);
+
+		$query->open();
+	}
+
+
+	public function execute($saveRevisit = true) {
+		$code = Blocker::blk_none;
+
+		if (($code = $this->doExecute()) != Blocker::blk_none && $saveRevisit) {
+			$this->save($code);
+
+			$this->blockLog($code);
+		}
+
+		return $code;
+	}
+}
+
+
+class BlacklistBlocker extends Blocker {
+
+	protected function doExecute() {
+		$connection = $this->session->getConnection();
+
+#		$query = $connection->createQuery("
+#			select
+#				block_msisdn_id
+#			from message_service.block_msisdn force index(u_block_msisdn)
+#			where msisdn = ?
+#			and enabled = 1
+#		");
+
+#		$query = $connection->createQuery("
+#			select
+#				msisdn
+#			from wap.blocked_msisdn
+#			where msisdn = ?
+#			and enabled = 1
+#		");
+
+		$query = $connection->createQuery("
+			select
+				msisdn
+			from wap.block_msisdn
+			where msisdn = ?
+			and enabled = 1
+			and sys_timestamp > date_sub(current_timestamp(), interval block_days day)
+		");
+
+		$query->setString(1, $this->msisdn);
+
+		$query->open(false);
+
+		$rows = $query->getResultArray();
+
+		$blocked = (count($rows) > 0);
+
+
+		return ($blocked)? Blocker::blk_black: Blocker::blk_none;
+	}
+}
+
+abstract class LimitBlocker extends Blocker {
+
+	protected $limit;
+
+	public function __construct($session) {
+		parent::__construct($session);
+
+		$this->limit = 2;
+	}
+
+
+	public function setLimit($limit) {
+		$this->limit = $limit;
+	}
+
+	public function getLimit() {
+		return $this->limit;
+	}
+}
+
+class SubLimitBlocker extends LimitBlocker {
+
+	protected function doExecute() {
+		$connection = $this->session->getConnection();
+		$query = $connection->createQuery("
+			select
+				subscriber_id
+			from message_service.subscriber
+			where msisdn = ?
+			and enabled = ?
+		");
+
+		$query->setString(1, $this->msisdn);
+		$query->setInt(2, 1); # always enabled
+
+		$query->open(false);
+
+		$rows = $query->getResultArray();
+
+		$blocked = (count($rows) >= $this->getLimit());
+
+		return ($blocked)? Blocker::blk_climit: Blocker::blk_none;
+	}
+}
+
+
+class TryLimitBlocker extends LimitBlocker {
+
+	protected function doExecute() {
+		$connection = $this->session->getConnection();
+		$query = $connection->createQuery("
+			select
+				subscriber_id
+			from message_service.subscriber
+			where msisdn = ?
+			and register_timestamp >= date_sub(current_timestamp(), interval 90 day)
+		");
+
+		$query->setString(1, $this->msisdn);
+
+		$query->open(false);
+
+		$rows = $query->getResultArray();
+
+		$blocked = (count($rows) >= $this->getLimit());
+
+		return ($blocked)? Blocker::blk_tlimit: Blocker::blk_none;
+	}
+}
+
+class HPSLimitBlocker extends LimitBlocker {
+
+	public static $limits = array(
+		WapMedia::telco_unk => 100,
+		WapMedia::telco_non => 100,
+		WapMedia::telco_mos => 100,
+		WapMedia::telco_ais => 100,
+		WapMedia::telco_dtc => 100,
+		WapMedia::telco_tmv => 100,
+		WapMedia::telco_rmv => 100
+	);
+
+	protected function doExecute() {
+		$connection = $this->session->getConnection();
+		$cacheClient = $connection->getCacheClient();
+
+		$key = sprintf('HPS-T(%s:%s)_%s', WapMedia::$telcos[$this->telcoId], $this->session->getCpId(),  date("Y-m-d_H:i:s"));
+
+		if (($counter = $cacheClient->increment($key)) === FALSE) {
+			$cacheClient->set($key, 1, 0, 60 * 30);
+			$counter = 1;
+		}
+
+		$this->session->takeLog("KEY ". $key . " " . $counter);
+
+		$blocked = ($counter > $this->getLimit());
+
+		return ($blocked)? Blocker::blk_hps: Blocker::blk_none;
+	}
+
+	public function getLimit() {
+		return HPSLimitBlocker::$limits[$this->telcoId];
+	}
+}
+
+class LastSubLimitBlocker extends LimitBlocker {
+
+	public static $limits = array(
+		WapMedia::telco_unk => 0,
+		WapMedia::telco_non => 0,
+		WapMedia::telco_mos => 0,
+		WapMedia::telco_ais => 0,
+		WapMedia::telco_dtc => 0,
+		WapMedia::telco_tmv => 0,
+		WapMedia::telco_rmv => 0
+	);
+
+	protected function doExecute() {
+
+		if (($limit = $this->getLimit()) == 0) {
+			return Blocker::blk_none;
+		}
+
+
+		$cpId = $this->session->getCpId();
+
+
+		$connection = $this->session->getConnection();
+#		$query = $connection->createQuery("
+#			select
+#				time_to_sec(timediff(current_timestamp(), s.register_timestamp)) as diff
+#			from message_service.subscriber s
+#				join message_service.telco_service t using (telco_id, service_id)
+#			where s.telco_id = ?
+#			and t.shortcode like ?
+#			order by s.subscriber_id desc
+#			limit 1
+#		");
+		$query = $connection->createQuery("
+			select
+				time_to_sec(timediff(current_timestamp(), s.register_timestamp)) as diff
+			from message_service.subscriber s
+			where s.telco_id = ?
+			order by s.subscriber_id desc
+			limit 1
+		");
+
+		$query->setInt(1, $this->telcoId);
+#		$query->setString(2, "4{$cpId}%");
+
+		$query->open(false);
+		$rows = $query->getResultArray();
+
+		$blocked = (count($rows) > 0 && $rows[0]['diff'] < $limit);
+
+		return ($blocked)? Blocker::blk_lastsub: Blocker::blk_none;
+	}
+
+	public function getLimit() {
+		return LastSubLimitBlocker::$limits[$this->telcoId];
+	}
+}
+
+
+
+
+class WapBlocker extends Blocker {
+	protected function doExecute() {
+
+		if (
+			empty($this->msisdn)		||
+			$this->msisdn == "66869743416"	||	# man dtac
+			$this->msisdn == "66922637316"	||	# man ais
+			$this->msisdn == "66817204478"		# mo ais
+		) {
+			return Blocker::blk_none;
+		}
+
+#		if ($this->telcoId == 3) {
+#			return 20;
+#		}
+
+
+		$code = Blocker::blk_none;
+
+		$blocker = new BlacklistBlocker($this->session);
+		$blocker->setMsisdn($this->msisdn);
+		$blocker->setTelcoId($this->telcoId);
+
+		if (($code = $blocker->execute(false)) != Blocker::blk_none) {
+			Logger::$logger->info("blocked [{$this->msisdn}] by Blacklist");
+
+			return $code;
+		}
+
+		$blocker = new SubLimitBlocker($this->session);
+		$blocker->setMsisdn($this->msisdn);
+		$blocker->setTelcoId($this->telcoId);
+		$blocker->setLimit(1);
+
+		if (($code = $blocker->execute(false)) != Blocker::blk_none) {
+			Logger::$logger->info("blocked [{$this->msisdn}] by Service Limit");
+
+			return $code;
+		}
+
+		$blocker = new TryLimitBlocker($this->session);
+		$blocker->setMsisdn($this->msisdn);
+		$blocker->setTelcoId($this->telcoId);
+		$blocker->setLimit(1);
+
+		if (($code = $blocker->execute(false)) != Blocker::blk_none) {
+			Logger::$logger->info("blocked [{$this->msisdn}] by Service Limit");
+
+			return $code;
+		}
+
+		$blocker = new LastSubLimitBlocker($this->session);
+		$blocker->setMsisdn($this->msisdn);
+		$blocker->setTelcoId($this->telcoId);
+		$blocker->setLimit(10);
+
+		if (($code = $blocker->execute(false)) != Blocker::blk_none) {
+			Logger::$logger->info("blocked [{$this->msisdn}] by Last Sub");
+
+			return $code;
+		}
+
+		$blocker = new HPSLimitBlocker($this->session);
+		$blocker->setMsisdn($this->msisdn);
+		$blocker->setTelcoId($this->telcoId);
+		$blocker->setLimit(10);
+
+		if (($code = $blocker->execute(false)) != Blocker::blk_none) {
+			Logger::$logger->info("blocked [{$this->msisdn}] by HPS");
+
+			return $code;
+		}
+
+		return $code;
+	}
+}
+

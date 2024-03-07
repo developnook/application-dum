@@ -1,0 +1,175 @@
+<?php
+	require_once('com/moserv/sql/connection.php');
+
+class CustomerCase {
+
+	private $session;
+	private $telcoId;
+	private $msisdn;
+
+	public function __construct($session) {
+		$this->session = $session;
+	}
+
+	public function setTelcoId($telcoId) {
+		$this->telcoId = $telcoId;
+	}
+
+	public function getTelcoId() {
+		return $this->telcoId;
+	}
+
+	public function setMsisdn($msisdn) {
+		$this->msisdn = $msisdn;
+	}
+
+	public function getMsisdn() {
+		return $this->msisdn;
+	}
+
+	public function hit($subscriberId, $blockCode) {	
+		$connection = $this->session->getConnection();
+		$query = $connection->createQuery(
+<<<sql
+		select 
+			su.msisdn as msisdn,
+			su.telco_id as telco_id,
+			ct.channel_type_name as channel_type_name,
+			i.shortcode as shortcode,
+			i.text as text,
+--			COALESCE(su.register_timestamp, 'no data') as register_timestamp,
+			COALESCE(c.sys_timestamp, 'no data') as click_timestamp,
+--			COALESCE(s.user_agent, 'no data') as user_agent,
+			concat(
+				substr(
+					lc.url, 
+					1, 
+					instr(
+						lc.url,
+						'.com/'
+					) + 4
+				), 
+				'land-', 
+				date_format(
+					lc.sys_timestamp, 
+					'%Y%m%d%H%i%s'
+				), 
+				lpad(
+					lc.landing_id, 
+					10, 
+					'0'
+				)
+			) as link_cpcc
+		from    
+			message_service.subscriber su 
+			left join message_service.subscriber_action sa using(subscriber_id)                             
+			left join message_service.incoming_message i using(incoming_message_id)
+			left join wap.click c on i.proxy_message_id = c.proxy_message_id 
+			left join wap.hit h on c.hit_id = h.hit_id
+			left join wap.session s on h.session_id = s.session_id
+			left join wap.landing l on c.click_id = l.click_id
+			left join wap.landing_config lc on l.landing_id = lc.landing_id
+			join message_service.channel_type ct on ct.channel_type_id = i.channel_type_id
+		where   
+			su.subscriber_id = ?
+sql
+		);
+		
+		$query->setInt(1, $subscriberId);
+
+		$query->open(false);
+
+		$rows = $query->getResultArray();
+		
+		if (count($rows) > 0) {
+			$row = $rows[0];
+
+
+			$resultArr = array(
+				"msisdn"		=>	$rows[0]['msisdn'],
+				"telco_id"		=>	$rows[0]['telco_id'],
+				"shortcode"		=>	$rows[0]['shortcode'],
+				"text"			=>	$rows[0]['text'],
+				"channel_type_name"	=>	$rows[0]['channel_type_name'],
+//				"register_timestamp"	=>	$rows[0]['register_timestamp'],
+				"click_time"	=>	$rows[0]['click_timestamp'],
+//				"user_agent"		=>	$rows[0]['user_agent'],
+				"url"			=>	$rows[0]['link_cpcc']
+			);
+					
+			$this->setMsisdn($resultArr['msisdn']);
+			$this->setTelcoId($resultArr['telco_id']);
+
+			echo "<table>";
+			echo "<tr>";
+				foreach ( $resultArr as $key=>$value ) {
+					echo "<tr id=\"".$key."\"><td>".$key."</td>"."<td>".$value."</td></tr>";
+				}
+			echo "</tr>";
+			echo "</table>";
+
+			echo "<input type='hidden' id='msisdn_t' value='{$this->getMsisdn()}'/>";
+			echo "<input type='hidden' id='telcoId_t' value='{$this->getTelcoId()}'/>";
+
+		}
+	}
+
+	public function register($msisdn, $telcoId) {
+		$connection = $this->session->getConnection();
+		$query = $connection->createQuery(
+<<<sql
+		select 
+			block_msisdn_id
+		from message_service.block_msisdn
+		where
+			msisdn = ?
+			and telco_id = ?
+sql
+		);
+	
+		$query->setString(1, $msisdn);
+		$query->setInt(2, $telcoId);
+
+#		show cmd_sql
+#		echo $query->getParsedSql();
+
+		$query->open(false);
+
+		$rows = $query->getResultArray();
+	
+		if (count($rows) > 0) {
+			$row = $rows[0];
+
+			$block_msisdn_id = $rows[0]['block_msisdn_id'];
+
+#			echo "<br>{$block_msisdn_id}<br>";
+			echo "Duplicate, This msisdn was blocked.";
+		}
+		else {
+#			$this->save($msisdn, $telcoId);
+			echo "saved";
+		}
+	}
+
+	public function save($msisdn, $telcoId) {
+		$connection = $this->session->getConnection();
+		$query = $connection->createQuery(
+<<<sql
+			insert into message_service.block_msisdn(
+				msisdn,
+				telco_id,
+				enabled
+			) values(?,?,?)
+sql
+		);
+		$query->setString(1, $msisdn);
+		$query->setInt(2, $telcoId);
+		$query->setInt(3, 1);
+
+		$query->open(false);
+
+#		echo "insert into block_msisdn(msisdn, telco_id, enabled) values('{$msisdn}', '{$telcoId}', 1);<br>";
+		echo "Success";
+	}
+}
+

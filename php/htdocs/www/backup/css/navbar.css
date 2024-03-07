@@ -1,0 +1,57 @@
+div#navbar {
+	display: grid;
+	top: 0;
+	left: 0;
+	margin: 0;
+	background-color: var(--navbar-bg-color);
+	color: var(--navbar-text-color);
+}
+
+div#navbar-control {
+	display: grid;
+	position: relative;
+	width: 80%;
+	left: 50%;
+	justify-content: space-between;
+	grid-template-columns: 50% 50%;
+	transform: translate(-50%, 0);
+}
+
+div#navbar-control-logo {
+	font-family: 'Prompt', sans-serif;
+	font-weight: 100;
+	font-size: 3rem;
+	display: grid;
+	line-height: 0;
+}
+
+div#navbar-control-logo > div {
+	display: grid;
+	justify-content: start;
+	margin: auto 0;
+}
+
+div#navbar-control-menu {
+	display: grid;
+	font-family: 'Kanit', sans-serif;
+	font-size: 0.9rem;
+	font-weight: 200;
+
+	justify-content: end;
+}
+
+div#navbar-control-menu > ul {
+	margin: 20px 0;
+}
+
+div#navbar-control-menu > ul > li {
+	display: inline-grid;
+	cursor: pointer;
+
+	align-content: center;
+	justify-content: center;
+}
+
+div#navbar-control-menu > ul > li:not(:last-child) {
+	margin-right: 2rem;
+}

@@ -1,0 +1,81 @@
+div#container-review > div.section {
+	height: auto;
+}
+
+div#container-review > div:nth-child(1).section > div.section-img {
+	justify-items: end;
+}
+
+div#container-review > div:nth-child(1).section > div.section-control > div:nth-child(1) {
+	text-align: left;
+}
+
+div#container-review > div:nth-child(1).section > div.section-img > img:nth-child(1) {
+	width: 45%;
+	margin-right: 150px;
+}
+
+div#container-review > div:nth-child(1).section > div.section-control > div:nth-child(1) > p:nth-child(1),
+div#container-review > div:nth-child(1).section > div.section-control > div:nth-child(1) > p:nth-child(2) {
+	font-size: var(--font-size-title);
+	line-height: 1.5rem;
+	margin-bottom: 20px;
+}
+
+div#container-review > div:nth-child(1).section > div.section-control > div:nth-child(1) > p:nth-child(3) {
+	font-size: var(--font-size-normal);
+	line-height: 1.5rem;
+	margin-bottom: 20px;
+	font-weight: 300;
+}
+
+div#container-review > div:nth-child(2).section > div.section-img {
+	justify-items: start;
+}
+
+div#container-review > div:nth-child(2).section > div.section-img > img:nth-child(1) {
+	width: 45%;
+	margin-left: 150px;
+}
+
+div#container-review > div:nth-child(2).section > div.section-control > div:nth-child(3) {
+	text-align: left;
+}
+
+div#container-review > div:nth-child(2).section > div.section-control > div:nth-child(3) > p:nth-child(1) {
+	font-size: var(--font-size-title);
+	line-height: 1.5rem;
+	margin-bottom: 20px;
+}
+
+div#container-review > div:nth-child(2).section > div.section-control > div:nth-child(3) > p:nth-child(2) {
+	font-size: var(--font-size-normal);
+	line-height: 1.5rem;
+	margin-bottom: 20px;
+	font-weight: 300;
+}
+
+div#container-review > div:nth-child(3).section > div.section-img {
+	justify-items: end;
+}
+
+div#container-review > div:nth-child(3).section > div.section-img > img:nth-child(1) {
+	width: 40%;
+	margin-right: 150px;
+}
+
+div#container-review > div:nth-child(3).section > div.section-control > div:nth-child(1) {
+	text-align: left;
+}
+
+div#container-review > div:nth-child(3).section > div.section-control > div:nth-child(1) > p:nth-child(1) {
+	font-size: var(--font-size-title);
+	margin-bottom: 20px;
+}
+
+div#container-review > div:nth-child(3).section > div.section-control > div:nth-child(1) > p:nth-child(2) {
+	font-size: var(--font-size-normal);
+	line-height: 1.5rem;
+	margin-bottom: 20px;
+	font-weight: 300;
+}

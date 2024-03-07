@@ -1,0 +1,143 @@
+div#container-knowledge > div:nth-child(1).section > div.section-img > img:nth-child(1) {
+	left: 0;
+	width: 60%;
+}
+
+div#container-knowledge > div:nth-child(1).section > div.section-control > div:nth-child(3) {
+	text-align: center;
+}
+
+div#container-knowledge > div:nth-child(1).section > div.section-control > div:nth-child(3) > p:nth-child(1) {
+	font-size: var(--font-size-title);
+	/* line-height: 1.5rem; */
+	margin-bottom: 20px;
+}
+
+div#container-knowledge > div:nth-child(1).section > div.section-control > div:nth-child(3) > p:nth-child(2) {
+	font-size: var(--font-size-normal);
+	line-height: 1.5rem;
+	margin-bottom: 20px;
+}
+
+div#container-knowledge > div:nth-child(2).section > div.section-img {
+	justify-items: end;
+}
+
+div#container-knowledge > div:nth-child(2).section > div.section-img > img:nth-child(1) {
+	left: 0;
+	width: 60%;
+}
+
+div#container-knowledge > div:nth-child(2).section > div.section-control > div:nth-child(1) {
+	text-align: center;
+}
+
+div#container-knowledge > div:nth-child(2).section > div.section-control > div:nth-child(1) > p:nth-child(1),
+div#container-knowledge > div:nth-child(2).section > div.section-control > div:nth-child(1) > p:nth-child(2) {
+	font-size: var(--font-size-title);
+	line-height: 1.5rem;
+	margin-bottom: 20px;
+}
+
+div#container-knowledge > div:nth-child(2).section > div.section-control > div:nth-child(1) > p:nth-child(2) {
+	margin-bottom: 30px;
+}
+
+div#container-knowledge > div:nth-child(2).section > div.section-control > div:nth-child(1) > p:nth-child(3) {
+	font-size: var(--font-size-normal);
+	line-height: 1.5rem;
+	margin-bottom: 30px;
+}
+
+div#container-knowledge > div:nth-child(3).section > div.section-img > img:nth-child(1) {
+	left: 0;
+	width: 60%;
+}
+
+div#container-knowledge > div:nth-child(3).section > div.section-control > div:nth-child(3) {
+	text-align: center;
+}
+
+div#container-knowledge > div:nth-child(3).section > div.section-control > div:nth-child(3) > p:nth-child(1) {
+	font-size: var(--font-size-title);
+	/* line-height: 1.5rem; */
+	margin-bottom: 20px;
+}
+
+div#container-knowledge > div:nth-child(3).section > div.section-control > div:nth-child(3) > p:nth-child(2) {
+	font-size: var(--font-size-normal);
+	line-height: 1.5rem;
+	margin-bottom: 20px;
+}
+
+div#container-knowledge > div:nth-child(4).section {
+	height: auto;
+	padding: 100px 0;
+}
+
+div#container-knowledge > div:nth-child(4).section > div {
+	display: grid;
+	grid-template-columns: 1fr;
+	width: var(--width-control);
+	max-width: var(--max-width-control);
+}
+
+div#container-knowledge > div:nth-child(4).section > div > div:nth-child(1) > p {
+	margin: 50px 0 30px 0;
+	font-size: var(--font-size-title);
+}
+
+div#container-knowledge > div:nth-child(4).section > div > div:nth-child(2) {
+	display: grid;
+	position: relative;
+	grid-template-columns: repeat(3, 1fr);
+	column-gap: 100px;
+	row-gap: 50px;
+}
+
+div#container-knowledge > div:nth-child(4).section > div > div:nth-child(2) > div {
+	display: grid;
+	position: relative;
+	width: 100%;
+	grid-template-columns: repeat(1, 1fr);
+	column-gap: 10px;
+}
+
+div#container-knowledge > div:nth-child(4).section > div > div:nth-child(2) > div > div {
+	display: grid;
+	position: relative;
+	width: 100%;
+	justify-items: center;
+}
+
+div#container-knowledge > div:nth-child(4).section > div > div:nth-child(2) > div > div > p:nth-child(1) {
+	font-size: 25px;
+}
+
+div#container-knowledge > div:nth-child(4).section > div > div:nth-child(2) > div > img {
+	display: block;
+	width: 100%;
+	max-width: 100%;
+	min-width: 100px;
+	margin-bottom: 20px;
+	transition: var(--transition);
+}
+
+div#container-knowledge > div:nth-child(4).section > div > div:nth-child(2) > div > img:hover {
+	opacity: 0.5;
+}
+
+div#container-knowledge > div:nth-child(4).section > div > div:nth-child(3) {
+	display: grid;
+	margin-top: 100px;
+	justify-items: center;
+}
+
+@media screen and (max-width: 940px) {
+
+	div#container-knowledge > div:nth-child(4).section > div > div:nth-child(2) {
+		grid-template-columns: repeat(2, 1fr);
+		column-gap: 20px;
+		row-gap: 20px;
+	}
+}

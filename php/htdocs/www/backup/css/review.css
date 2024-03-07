@@ -1,0 +1,29 @@
+div.section-review {
+	display: grid;
+	position: relative;
+	height: 500px;
+	align-items: center;
+	grid-template-columns: 1fr 1fr;
+
+	font-family: 'Prompt', sans-serif;
+}
+
+div.section-review > div.section-img-control {
+	display: grid;
+	justify-content: center;
+}
+
+div.section-review > div.section-img-control > img {
+	height: 500px;
+}
+
+div.section-review > div.section-info-control {
+	display: grid;
+	width: 100%;
+	justify-items: center;
+}
+
+div.section-review > div.section-info-control > div.section-info {
+	display: grid;
+	width: 50%;
+}

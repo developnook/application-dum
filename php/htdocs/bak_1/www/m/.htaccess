@@ -1,0 +1,4 @@
+RewriteEngine On
+
+RewriteCond %{REQUEST_URI} /m/bod-\d{8}$
+RewriteRule (bod-\d{8})$ /m/index.php?value=$1 [L,B]
