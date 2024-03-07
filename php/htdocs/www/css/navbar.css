@@ -122,7 +122,9 @@ div#navbar-mobile > div#navbar-control > div:nth-child(3)> img {
 }
 
 .navbar-responsive-toggle{
-	display: none;
+	/* display: none; */
+	transition: .3s;
+	height: 0;
 }
 
 /* @media screen and (max-width: 740px) {
@@ -339,14 +341,13 @@ div#navbar-mobile > div#navbar-control > div:nth-child(3)> img {
 		}
 	}
 
-	.navTrigger.active .nav-res-active{
-		display: block;
+	.navbar-responsive-toggle.show{
+		height: 234px;
 	}
 
 	.navbar-responsive-toggle{
 		background-color: #fff;
 		width: 100%;
-		height: fit-content;
 	}
 
 	.navbar-responsive-toggle ul{

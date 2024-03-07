@@ -11,6 +11,9 @@ document.addEventListener('DOMContentLoaded', (event) => {
 });
 
 function navToggle() {
-	let element = document.getElementById("navTrigger");
+	var element = document.getElementById("navTrigger");
 	element.classList.toggle("active");
+
+	var navshow = document.getElementById("nav-res-active");
+	navshow.classList.toggle("show");
 }
