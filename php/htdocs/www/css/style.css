@@ -34,6 +34,10 @@
 	box-sizing: border-box;
 }
 
+body {
+    font-family: 'Prompt', sans-serif;
+}
+
 div.container-wrap {
 	position: relative;
 	min-height: 100vh;
@@ -47,6 +51,12 @@ div.content-wrap {
 }
 
 div.container {
+	position: relative;
+}
+
+.container-custom{
+    max-width: 1536px;
+    margin: auto;
 	position: relative;
 }
 
@@ -115,15 +125,11 @@ div.section-control > div:nth-child(2) {
 	text-align: center;
 }
 
-/* div.section-control > div:nth-child(3) {
-	text-align: right;
-} */
-
-div.bg-color-black {
+.bg-color-black {
 	background-color: var(--bg-color-black);
 }
 
-div.bg-color-white {
+.bg-color-white {
 	background-color: var(--bg-color-white);
 }
 
@@ -203,9 +209,18 @@ li.img-slide-active {
 	background-color: var(--btn-bg-color-hover);
 }
 
-@media screen and (max-width: 940px) {
-	/* div.section {
-		height: auto;
-		min-height: 589px;
-	} */
+/* จอ ipad */
+@media (max-width: 992px) {
+	.container-custom{
+		width: 100%;
+		padding-right: 15px;
+		padding-left: 15px;
+		margin-right: auto;
+		margin-left: auto;
+	}
+}
+
+/* จอมือถือ */
+@media (min-width: 340px) and (max-width: 577px){
+
 }

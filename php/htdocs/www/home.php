@@ -4,25 +4,47 @@ include_once('navbar.php');
 ?>
 
 <div id="container-home" class="container">
-	<div class="section bg-color-black text-color-white">
-		<div class="section-img">
-			<img src="<?php echo $configs['path-image']; ?>/contents/home/home-picture-1-1.png" />
-		</div>	
-		<div class="section-control">
-			<div>
-				<p>DUM TOOTHPASTE</p>
-				<p>
-					Charcoal Toothpaste Concentrated Herbal Formulaดํายาสีฟันชาร์โคล สูตรสมุนไพรสกัดเข้มข้น ยิ่งพูดยิ่งมั่นใจใครใช้ก็รู้สึกดี
-				</p>
-				<p class="mt-20px">
-				ด้วยส่วนผสมสมุนไพรสกัดเข้มข้นในดํายาสีฟันชาร์โคลทั้ง 9 ชนิด ผ่านกรรมวิธีผลิตที่ทันสมัย บนมาตรฐานความปลอดภัยทุกขั้นตอน สามารถคงคุณค่าสมุนไพรไว้อย่างครบถ้วน เหมาะสําหรับผู้ที่มีปัญหากลิ่นปาก ช่วยให้มีสุขภาพเหงือกและฟันที่แข็งแรง เพื่อปากสะอาด หอมสดชื่นยาวนานตลอดวัน
-				</p>
+	<div class="section-content bg-color-black text-color-white">
+		<div class="container-custom">
+			<div class="content">
+				<div class="product-img-responsive">
+					<img src="<?php echo $configs['path-image']; ?>/contents/home/home-picture-1-1.png" />
+				</div>
+				<div class="text-content">
+					<p class="title">ยิ่งพูดยิ่งมั่นใจ ใครใช้ก็รู้สึกดี</p>
+					<p class="detail">DUM เชื่อว่า ทุกคนสามารถมีสุขภาพช่องปากและฟันที่ดี</p>
+				</div>
+				<div class="product-img">
+					<img src="<?php echo $configs['path-image']; ?>/contents/home/home-picture-1-1.png" />
+				</div>
 			</div>
-			<div></div>
-			<div></div>
 		</div>
 	</div>
-	<div class="section bg-color-black text-color-white">
+	<div class="section-content bg-color-black text-color-white">
+		<div class="container-custom">
+			<div class="content">
+				<div class="product-img-responsive">
+					<img src="<?php echo $configs['path-image']; ?>/contents/home/home-picture-1-1.png" />
+				</div>
+				<div class="text-content">
+					<p class="title">ยาสีฟันชาร์โคล</p>
+					<p class="detail">
+						สูตรสมุนไพรสกัดเข้มข้น ด้วยส่วนผสมสมุนไพรจากธรรมชาติและกรรมวิธีการผลิตที่ทันสมัย สามารถคงคุณค่าสมุนไพรไว้อย่างครบถ้วน ช่วยขจัดกลิ่นปาก ลดอาการเสียวฟันเพื่อปากสะอาด สุขภาพเหงือกและฟันแข็งแรง ยาวนานตลอดวัน
+					</p>
+					<div class="mt-30px">test icon</div>
+					<p class="detail">ใช้ยาสีฟันประมาณเท่าเมล็ดถั่วเขียว มี 3 ขนาดให้เลือก</p>
+				</div>
+				<div class="product-img">
+					<img src="<?php echo $configs['path-image']; ?>/contents/home/home-picture-1-1.png" />
+				</div>
+				<div class="text-content">
+					<p class="title-small">ส่วนประกอบสําคัญ</p>
+					<p class="detail">Guava Leaf Aloe vera Charcoal Powder</p>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- <div class="section bg-color-black text-color-white">
 		<div class="section-img">
 			<img src="<?php echo $configs['path-image']; ?>/contents/home/home-picture-1-1.png" />
 		</div>	
@@ -45,7 +67,7 @@ include_once('navbar.php');
 				<p>Guava Leaf    Aloe vera   Charcoal Powder</p>
 			</div>
 		</div>
-	</div>
+	</div> -->
 	<div class="section bg-color-white text-color-black">
 		<div class="section-img">
 			<img src="<?php echo $configs['path-image']; ?>/contents/knowledge/knowledge-picture-1.png" />
@@ -150,9 +172,9 @@ velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at Lo
 			</div>
 		</div>
 	</div>
-	<!-- <div class="section-map bg-color-white">
-		<p>API Google MAP</p>	
-	</div> -->
+	<div class="section-map bg-color-white">
+		<iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d15502.43078016927!2d100.5855775!3d13.7421852!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x30e29ee781d37df5%3A0xaaa4c8a8956b0053!2z4Lia4Lij4Li04Lip4Lix4LiXIOC5guC4oeC5gOC4i-C4tOC4o-C5jOC4nyDguIjguLPguIHguLHguJQ!5e0!3m2!1sen!2sth!4v1709874788273!5m2!1sen!2sth" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>	
+	</div>
 </div>
 
 <?php
