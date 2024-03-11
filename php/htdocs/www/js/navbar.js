@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', (event) => {
 
-	let menu = document.querySelectorAll('ul#menu > li');
+	let menu = document.querySelectorAll('.navbar-menu > li');
 	menu.forEach(element => {
 		element.addEventListener('click', (event) => {
 			let page = element.dataset.value;

@@ -6,7 +6,7 @@
 			</div>
 		</div>
 		<div>
-			<ul id="menu">
+			<ul id="menu" class="navbar-menu">
 				<li id="menu-home" data-value="home">HOME</li>
 				<li id="menu-product" data-value="product">PRODUCTS</li>
 				<li id="menu-knowledge" data-value="knowledge">KNOWLEDGE</li>
@@ -37,7 +37,7 @@
 
 <!-- When Navbar Responsive Toggle -->
 <div id="nav-res-active" class="navbar-responsive-toggle">
-	<ul>
+	<ul class="navbar-menu">
 		<li id="menu-home" data-value="home">HOME</li>
 		<li id="menu-product" data-value="product">PRODUCTS</li>
 		<li id="menu-knowledge" data-value="knowledge">KNOWLEDGE</li>

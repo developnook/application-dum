@@ -17,7 +17,7 @@ xhtml
 	<title>DUM</title>
 	<link rel="icon" type="image/x-icon" href="/dum/logo.svg" />
 
-	<link href="css/font.css?v=<?= date('Y-m-d h:i:s') ?>" rel="stylesheet" />
+	<link href="css/font.css" rel="stylesheet" />
 	<link href="css/style.css?v=<?= date('Y-m-d h:i:s') ?>" rel="stylesheet" />
 	<link href="css/navbar.css?v=<?= date('Y-m-d h:i:s') ?>" rel="stylesheet" />
 	<link href="css/footer.css?v=<?= date('Y-m-d h:i:s') ?>" rel="stylesheet" />
@@ -34,8 +34,8 @@ xhtml
 	
 	<!-- Jquery -->
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js" integrity="sha512-3gJwYpMe3QewGELv8k/BX9vcqhryRdzRMxVfq6ngyWXwo03GFEzjsUm8Q7RZcHPHksttq7/GFoxjCVUjkjvPdw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-
-	<script src="js/navbar.js?v=<?= date('Y-m-d h:i:s') ?>" type="text/javascript"></script>
+	
+	<script src="js/navbar.js" type="text/javascript"></script>
 </head>
 <body>
 <div class="container-wrap">

@@ -14,7 +14,7 @@ include_once('navbar.php');
 					<p class="title">ยิ่งพูดยิ่งมั่นใจ ใครใช้ก็รู้สึกดี</p>
 					<p class="detail">DUM เชื่อว่า ทุกคนสามารถมีสุขภาพช่องปากและฟันที่ดี</p>
 				</div>
-				<div class="product-img">
+				<div class="product-img d-sm-none">
 					<img src="<?php echo $configs['path-image']; ?>/contents/home/home-picture-1-1.png" />
 				</div>
 			</div>
@@ -31,13 +31,13 @@ include_once('navbar.php');
 					<p class="detail">
 						สูตรสมุนไพรสกัดเข้มข้น ด้วยส่วนผสมสมุนไพรจากธรรมชาติและกรรมวิธีการผลิตที่ทันสมัย สามารถคงคุณค่าสมุนไพรไว้อย่างครบถ้วน ช่วยขจัดกลิ่นปาก ลดอาการเสียวฟันเพื่อปากสะอาด สุขภาพเหงือกและฟันแข็งแรง ยาวนานตลอดวัน
 					</p>
-					<div class="mt-30px">test icon</div>
+					<div class="mt-30px d-sm-none">test icon</div>
 					<p class="detail">ใช้ยาสีฟันประมาณเท่าเมล็ดถั่วเขียว มี 3 ขนาดให้เลือก</p>
 				</div>
-				<div class="product-img">
+				<div class="product-img d-sm-none">
 					<img src="<?php echo $configs['path-image']; ?>/contents/home/home-picture-1-1.png" />
 				</div>
-				<div class="text-content">
+				<div class="text-content d-sm-none">
 					<p class="title-small">ส่วนประกอบสําคัญ</p>
 					<p class="detail">Guava Leaf Aloe vera Charcoal Powder</p>
 				</div>

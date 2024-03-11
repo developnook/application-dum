@@ -209,6 +209,33 @@ li.img-slide-active {
 	background-color: var(--btn-bg-color-hover);
 }
 
+/* spacing */
+.mt-10px{
+	margin-top: 10px;
+}
+.mt-20px{
+	margin-top: 20px;
+}
+.mt-30px{
+	margin-top: 30px;
+}
+
+.mb-20px{
+	margin-bottom: 20px;
+}
+
+.text-center{
+	text-align: center !important;
+}
+/* end spacing */
+
+
+/* sizing */
+.w-100{
+	width: 100% !important;
+}
+/* end sizing */
+
 /* จอ ipad */
 @media (max-width: 992px) {
 	.container-custom{
