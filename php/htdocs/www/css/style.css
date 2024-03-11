@@ -57,7 +57,6 @@ div.container {
 .container-custom{
     max-width: 1536px;
     margin: auto;
-	position: relative;
 }
 
 div.section {

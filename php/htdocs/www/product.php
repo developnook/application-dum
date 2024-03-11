@@ -46,30 +46,15 @@ include_once('navbar.php');
 	<div class="section-content bg-color-black text-color-white">
 		<div class="container-custom">
 			<div class="content">
-				<div class="text-content w-100 text-center">
-					<p class="detail">ยาสีฟันยืนหนึ่งเรื่องกลิ่นปาก</p>
-					<p class="detail">คุ้มค่าด้วยส่วนผสมสมุมไพรสกัดเข้มข้นถึง 9 ชนิด</p>
-					<p class="detail">ช่วยแก้ปัญหากลิ่นปากเรื้อรัง</p>
+				<div class="text-content">
+					<p class="detail">ฟันขาวขึ้นอย่างเป็นธรรมชาติ</p>
+					<p class="detail">ลมหายใจสดชื่อตลอดวัน</p>
+					<p class="detail">ลดอาการเสียวฟันอย่างได้ผล</p>
 				</div>
-				<div class="img-box">
-					<img src="<?php echo $configs['path-image']; ?>/contents/product/product-picture-2.png" />
+				<div class="img-box-right">
+					<img src="<?php echo $configs['path-image']; ?>/contents/product/product-picture-3.png" />
 				</div>
 			</div>
-		</div>
-	</div>
-
-	<div class="section bg-color-black text-color-white">
-		<div class="section-img">
-			<img src="<?php echo $configs['path-image']; ?>/contents/product/product-picture-3.png" />
-		</div>	
-		<div class="section-control">
-			<div>
-				<p>ฟันขาวขึ้นอย่างเป็นธรรมชาติ</p>
-				<p>ปากสะอาด ลมหายใจสดชื่อตลอดวัน</p>
-				<p>ลดอาการเสียวฟันอย่างได้ผล</p>
-			</div>
-			<div></div>
-			<div></div>
 		</div>
 	</div>
 
