@@ -79,11 +79,35 @@ include_once('navbar.php');
 			<div></div>
 			<div>
 				<p>ดำยาสีฟันชาร์โคล</p>
-				<a class="btn btn-white" href="<?php echo $market['line-oa']; ?>" target="_blank" >ORDER NOW</a>
+				<a class="btn btn-white" href="<?php echo $market['line-oa']; ?>" target="_blank">ORDER NOW</a>
 			</div>
 			<div></div>
 		</div>
 	</div>
+
+	<!-- Image slide when responsive -->
+	<!-- <div class="section-content bg-color-black text-color-white">
+		<div class="container-custom">
+			<section class="splide" aria-label="Splide Basic HTML Example">
+				<div class="splide__track">
+					<ul class="splide__list">
+						<li class="splide__slide">
+							<img src="<?php echo $configs['path-image']; ?>/contents/product/ingredient/charcoal.png" />
+						</li>
+						<li class="splide__slide">
+							<img src="<?php echo $configs['path-image']; ?>/contents/product/ingredient/aloe.png" />
+						</li>
+						<li class="splide__slide">
+							<img src="<?php echo $configs['path-image']; ?>/contents/product/ingredient/psidium-guajava-leaf-extract.png" />
+						</li>
+					</ul>
+				</div>
+			</section>
+		</div>
+	</div> -->
+	<!-- End Image slide when responsive -->
+
+
 	<div class="section bg-color-white text-color-black">
 		<div>
 			<div>
@@ -157,6 +181,14 @@ include_once('navbar.php');
 		</div>
 	</div>
 </div>
+
+<script>
+	var splide = new Splide( '.splide',{
+		type: 'loop',
+		autoplay: true,
+	});
+	splide.mount();
+</script>
 
 <?php
 include_once('footer.php');
