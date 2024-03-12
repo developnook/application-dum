@@ -13,11 +13,11 @@ $market = array(
 
 $configs = array(
 //	'path-image' => '/dum/images',
-	'path-image' => '/images'
+	'path-image' => 'images'
 );
 
 // $path['charcoal'] = "/dum/charcoal";
-$path['charcoal'] = "/charcoal";
+$path['charcoal'] = "charcoal";
 
 // $path['knowledge'] = "/dum/knowledge";
-$path['knowledge'] = "/knowledge";
+$path['knowledge'] = "knowledge";

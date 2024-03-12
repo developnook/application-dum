@@ -85,30 +85,7 @@ include_once('navbar.php');
 		</div>
 	</div>
 
-	<!-- Image slide when responsive -->
-	<!-- <div class="section-content bg-color-black text-color-white">
-		<div class="container-custom">
-			<section class="splide" aria-label="Splide Basic HTML Example">
-				<div class="splide__track">
-					<ul class="splide__list">
-						<li class="splide__slide">
-							<img src="<?php echo $configs['path-image']; ?>/contents/product/ingredient/charcoal.png" />
-						</li>
-						<li class="splide__slide">
-							<img src="<?php echo $configs['path-image']; ?>/contents/product/ingredient/aloe.png" />
-						</li>
-						<li class="splide__slide">
-							<img src="<?php echo $configs['path-image']; ?>/contents/product/ingredient/psidium-guajava-leaf-extract.png" />
-						</li>
-					</ul>
-				</div>
-			</section>
-		</div>
-	</div> -->
-	<!-- End Image slide when responsive -->
-
-
-	<div class="section bg-color-white text-color-black">
+	<div class="section bg-color-white text-color-black d-sm-none">
 		<div>
 			<div>
 				<p>INGREDIENT</p>
@@ -180,6 +157,42 @@ include_once('navbar.php');
 			</div>
 		</div>
 	</div>
+	<!-- Image slide when responsive -->
+	<div class="section-content bg-color-white text-color-black d-lg-none d-sm-block">
+		<div class="container-custom">
+			<section class="splide" aria-label="Splide Basic HTML Example">
+				<div class="section-title text-center">
+					INGREDIENT
+				</div>
+				<div class="splide__track">
+					<ul class="splide__list">
+						<li class="splide__slide">
+							<img src="<?php echo $configs['path-image']; ?>/contents/product/ingredient/charcoal.png" />
+							<div class="detail text-center">
+								<p class="title">CHARCOAL POWDER</p>
+								<p>ช่วยขัดสีฟันให้ขาวขึ้น ขจัดคราบสกปกที่ติดตามซอกฟัน ลดปัญหาการเกิดกลิ่นปาก</p>
+							</div>
+						</li>
+						<li class="splide__slide">
+							<img src="<?php echo $configs['path-image']; ?>/contents/product/ingredient/aloe.png" />
+							<div class="detail text-center">
+								<p class="title">CHARCOAL POWDER</p>
+								<p>ช่วยขัดสีฟันให้ขาวขึ้น ขจัดคราบสกปกที่ติดตามซอกฟัน ลดปัญหาการเกิดกลิ่นปาก</p>
+							</div>
+						</li>
+						<li class="splide__slide">
+							<img src="<?php echo $configs['path-image']; ?>/contents/product/ingredient/psidium-guajava-leaf-extract.png" />
+							<div class="detail text-center">
+								<p class="title">CHARCOAL POWDER</p>
+								<p>ช่วยขัดสีฟันให้ขาวขึ้น ขจัดคราบสกปกที่ติดตามซอกฟัน ลดปัญหาการเกิดกลิ่นปาก</p>
+							</div>
+						</li>
+					</ul>
+				</div>
+			</section>
+		</div>
+	</div>
+	<!-- End Image slide when responsive -->
 </div>
 
 <script>

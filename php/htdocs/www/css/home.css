@@ -52,6 +52,10 @@
 	display: none;
 }
 
+.d-lg-none{
+	display: none;
+}
+
 
 div#container-home > div:nth-child(1).section > div.section-img > img:nth-child(1),
 div#container-home > div:nth-child(2).section > div.section-img > img:nth-child(1) {
@@ -314,6 +318,10 @@ div#container-home > div.section-map {
 
 	.d-sm-none{
 		display: none !important;
+	}
+
+	.d-sm-block{
+		display: block !important;
 	}
 
 	div#container-home > div.section {

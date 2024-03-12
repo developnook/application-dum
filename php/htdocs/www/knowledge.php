@@ -5,6 +5,10 @@ include_once('navbar.php');
 ?>
 
 <div id="container-knowledge" class="container">
+	<div class="section-content bg-color-white text-color-black">
+		
+	</div>
+
 	<div class="section bg-color-white text-color-black">
 		<div class="section-img">
 			<img src="<?php echo $configs['path-image']; ?>/contents/knowledge/knowledge-picture-1.png" />
