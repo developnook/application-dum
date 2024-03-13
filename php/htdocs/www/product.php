@@ -111,35 +111,35 @@ include_once('navbar.php');
 						<p>CHARCOAL POWDER</p>
 						<p>ช่วยขัดสีฟันให้ขาวขึ้น ขจัดคราบสกปกที่ติดตามซอกฟัน ลดปัญหาการเกิดกลิ่นปาก</p>
 					</div>
-				</div>
+				</div> 
 				<div>
 					<img src="<?php echo $configs['path-image']; ?>/contents/product/ingredient/menthol.png" />
 					<div>
 						<p>CHARCOAL POWDER</p>
 						<p>ช่วยขัดสีฟันให้ขาวขึ้น ขจัดคราบสกปกที่ติดตามซอกฟัน ลดปัญหาการเกิดกลิ่นปาก</p>
 					</div>
-				</div>
+				</div> 
 				<div>
 					<img src="<?php echo $configs['path-image']; ?>/contents/product/ingredient/eugenia-caryophyllus-leaf-oil.png" />
 					<div>
 						<p>CHARCOAL POWDER</p>
 						<p>ช่วยขัดสีฟันให้ขาวขึ้น ขจัดคราบสกปกที่ติดตามซอกฟัน ลดปัญหาการเกิดกลิ่นปาก</p>
 					</div>
-				</div>
+				</div> 
 				<div>
 					<img src="<?php echo $configs['path-image']; ?>/contents/product/ingredient/mentha-piperita.png" />
 					<div>
 						<p>CHARCOAL POWDER</p>
 						<p>ช่วยขัดสีฟันให้ขาวขึ้น ขจัดคราบสกปกที่ติดตามซอกฟัน ลดปัญหาการเกิดกลิ่นปาก</p>
 					</div>
-				</div>
+				</div> 
 				<div>
 					<img src="<?php echo $configs['path-image']; ?>/contents/product/ingredient/borneol.png" />
 					<div>
 						<p>CHARCOAL POWDER</p>
 						<p>ช่วยขัดสีฟันให้ขาวขึ้น ขจัดคราบสกปกที่ติดตามซอกฟัน ลดปัญหาการเกิดกลิ่นปาก</p>
 					</div>
-				</div>
+				</div> 
 				<div>
 					<img src="<?php echo $configs['path-image']; ?>/contents/product/ingredient/camphor.png" />
 					<div>
@@ -185,6 +185,48 @@ include_once('navbar.php');
 							<div class="detail text-center">
 								<p class="title">CHARCOAL POWDER</p>
 								<p>ช่วยขัดสีฟันให้ขาวขึ้น ขจัดคราบสกปกที่ติดตามซอกฟัน ลดปัญหาการเกิดกลิ่นปาก</p>
+							</div>
+						</li>
+						<li class="splide__slide">
+							<img src="<?php echo $configs['path-image']; ?>/contents/product/ingredient/menthol.png" />
+							<div class="detail text-center">
+								<p class="title">Lorem ipsum dolor sit amet.</p>
+								<p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quae, veniam.</p>
+							</div>
+						</li>
+						<li class="splide__slide">
+							<img src="<?php echo $configs['path-image']; ?>/contents/product/ingredient/eugenia-caryophyllus-leaf-oil.png" />
+							<div class="detail text-center">
+								<p class="title">Lorem ipsum dolor sit amet.</p>
+								<p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quae, veniam.</p>
+							</div>
+						</li>
+						<li class="splide__slide">
+							<img src="<?php echo $configs['path-image']; ?>/contents/product/ingredient/mentha-piperita.png" />
+							<div class="detail text-center">
+								<p class="title">Lorem ipsum dolor sit amet.</p>
+								<p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quae, veniam.</p>
+							</div>
+						</li>
+						<li class="splide__slide">
+							<img src="<?php echo $configs['path-image']; ?>/contents/product/ingredient/borneol.png" />
+							<div class="detail text-center">
+								<p class="title">Lorem ipsum dolor sit amet.</p>
+								<p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quae, veniam.</p>
+							</div>
+						</li>
+						<li class="splide__slide">
+							<img src="<?php echo $configs['path-image']; ?>/contents/product/ingredient/camphor.png" />
+							<div class="detail text-center">
+								<p class="title">Lorem ipsum dolor sit amet.</p>
+								<p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quae, veniam.</p>
+							</div>
+						</li>
+						<li class="splide__slide">
+							<img src="<?php echo $configs['path-image']; ?>/contents/product/ingredient/calcium-carbonate.png" />
+							<div class="detail text-center">
+								<p class="title">Lorem ipsum dolor sit amet.</p>
+								<p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quae, veniam.</p>
 							</div>
 						</li>
 					</ul>
