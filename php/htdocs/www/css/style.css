@@ -243,6 +243,10 @@ li.img-slide-active {
 	line-height: 1.5rem;
 }
 
+.justify-content-center{
+	justify-content: center !important;
+}
+
 /* spacing */
 .ma-0{
 	margin: 0 !important;
@@ -302,6 +306,17 @@ li.img-slide-active {
 
 	.d-sm-text-center{
 		text-align: center !important;
+	}
+
+	.d-sm-none{
+		display: none !important;
+	}
+
+	.d-sm-block{
+		display: block !important;
+	}
+	.d-sm-width-fit{
+		width: fit-content !important;
 	}
 }
 

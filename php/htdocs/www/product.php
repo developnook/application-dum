@@ -75,11 +75,13 @@ include_once('navbar.php');
 		<div class="section-img">
 			<img src="<?php echo $configs['path-image']; ?>/contents/product/product-picture-5.png" />
 		</div>	
-		<div class="section-control">
+		<div class="section-control d-sm-block">
 			<div></div>
-			<div>
+			<div class="justify-content-center">
 				<p>ดำยาสีฟันชาร์โคล</p>
-				<a class="btn btn-white" href="<?php echo $market['line-oa']; ?>" target="_blank">ORDER NOW</a>
+				<a class="btn btn-white d-sm-width-fit" href="<?php echo $market['line-oa']; ?>" target="_blank">
+					ORDER NOW
+				</a>
 			</div>
 			<div></div>
 		</div>

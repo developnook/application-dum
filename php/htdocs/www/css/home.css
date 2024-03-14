@@ -316,14 +316,6 @@ div#container-home > div.section-map {
 
 @media (max-width: 992px) {
 
-	.d-sm-none{
-		display: none !important;
-	}
-
-	.d-sm-block{
-		display: block !important;
-	}
-
 	div#container-home > div.section {
 		height: auto;
 		padding: 80px 0 10px 0;
