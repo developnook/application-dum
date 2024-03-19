@@ -21,7 +21,7 @@
 	--text-color-black: black;
 
 	--font-size-title:35px;
-	--font-size-normal: 20px;
+	--font-size-normal: 18px;
 
 	--transition: 0.2s;
 
@@ -248,6 +248,10 @@ li.img-slide-active {
 	justify-content: center !important;
 }
 
+.d-lg-none{
+	display: none;
+}
+
 /* spacing */
 .ma-0{
 	margin: 0 !important;
@@ -268,6 +272,10 @@ li.img-slide-active {
 
 .pa-0{
 	padding: 0px !important;
+}
+
+.pb-3{
+	padding-bottom: 30px !important;
 }
 
 .text-center{
@@ -318,6 +326,10 @@ li.img-slide-active {
 	}
 	.d-sm-width-fit{
 		width: fit-content !important;
+	}
+
+	.img-section img{
+		width: 100%;
 	}
 }
 

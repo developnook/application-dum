@@ -10,9 +10,19 @@ include_once('navbar.php');
 				<div class="product-img-responsive">
 					<img src="<?php echo $configs['path-image']; ?>/contents/home/home-picture-1-1.png" />
 				</div>
-				<div class="text-content">
+				<!-- <div class="text-content d-sm-none">
 					<p class="title">ยิ่งพูดยิ่งมั่นใจ ใครใช้ก็รู้สึกดี</p>
 					<p class="detail">DUM เชื่อว่า ทุกคนสามารถมีสุขภาพช่องปากและฟันที่ดี</p>
+				</div> -->
+				<div class="text-content">
+					<p class="title">
+						<p>ยิ่งพูดยิ่งมั่นใจ</p>
+						<p>ใครใช้ก็รู้สึกดี</p>
+					</p>
+					<p class="detail">
+						<p>DUM เชื่อว่า ทุกคนสามารถ</p>
+						<p>มีสุขภาพช่องปากและฟันที่ดี</p>
+					</p>
 				</div>
 				<div class="product-img d-sm-none">
 					<img src="<?php echo $configs['path-image']; ?>/contents/home/home-picture-1-1.png" />
@@ -20,7 +30,7 @@ include_once('navbar.php');
 			</div>
 		</div>
 	</div>
-	<div class="section-content bg-color-black text-color-white">
+	<div class="section-content bg-color-black text-color-white pb-3">
 		<div class="container-custom">
 			<div class="content">
 				<div class="product-img-responsive">

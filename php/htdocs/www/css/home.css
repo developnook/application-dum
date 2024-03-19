@@ -31,7 +31,7 @@
 
 .content .text-content .detail{
 	font-size: var(--font-size-normal);
-	font-weight: 200;
+	font-weight: 300;
 	line-height: 1.5rem;
 }
 
@@ -49,10 +49,6 @@
 }
 
 .product-img-responsive{
-	display: none;
-}
-
-.d-lg-none{
 	display: none;
 }
 
@@ -232,7 +228,7 @@ div#container-home > div:nth-child(6).section > div.section-control > div:nth-ch
 
 div#container-home > div:nth-child(6).section > div.section-control > div:nth-child(1) > p:nth-child(2) {
 	font-size: var(--font-size-normal);
-	font-weight: 200;
+	font-weight: 300;
 }
 
 div#container-home > div:nth-child(6).section > div.section-control > div:nth-child(2) {
@@ -429,6 +425,10 @@ div#container-home > div.section-map {
 		width: 100%;
 		text-align: center;
 		margin: 1rem 0px;
+	}
+
+	.section-content .content .text-content .title{
+		display: inline-block;
 	}
 }
 
