@@ -81,13 +81,13 @@ div#navbar-mobile {
 	color: var(--navbar-text-color);
 }
 
-div#navbar-mobile > div#navbar-control {
+div#navbar-mobile > #navbar-control {
 	display: grid;
 	position: relative;
 	width: var(--width-control-res);
 	max-width: var(--max-width-control);
 	left: 50%;
-	grid-template-columns: 20% 60% 20%;
+	grid-template-columns: 20px 1fr 50px;
 	transform: translate(-50%, 0);
 	align-content: center;
 	align-items: center;
@@ -122,9 +122,9 @@ div#navbar-mobile > div#navbar-control > div:nth-child(1)> img {
 	cursor: pointer;
 }
 
-div#navbar-mobile > div#navbar-control > div:nth-child(3)> img {
+#navbar-mobile #navbar-control > div:nth-child(3)> img {
 	display: block;
-	max-height: 25px;
+	max-height: 30px;
 	cursor: pointer;
 }
 
