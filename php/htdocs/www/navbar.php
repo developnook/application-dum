@@ -21,7 +21,7 @@
 <!-- Navbar Responsive -->
 <div id="navbar-mobile">
 	<div id="navbar-control">
-		<span id="navTrigger" class="navTrigger" onclick="navToggle()">
+		<span id="navTrigger" class="navTrigger">
 			<i></i>
 			<i></i>
 			<i></i>

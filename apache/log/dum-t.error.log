@@ -2274,3 +2274,5 @@
 [Mon Mar 04 09:03:24.510441 2024] [proxy_fcgi:error] [pid 8:tid 139901424974648] [client 103.246.17.68:59454] AH01071: Got error 'Primary script unknown'
 [Mon Mar 04 09:03:25.027341 2024] [proxy_fcgi:error] [pid 8:tid 139901425261368] [client 103.246.17.68:59462] AH01071: Got error 'Primary script unknown'
 [Mon Mar 04 09:09:59.531220 2024] [proxy_fcgi:error] [pid 13:tid 139901425118008] [client 103.246.17.68:34194] AH01071: Got error 'Primary script unknown'
+[Tue Mar 19 10:03:39.515317 2024] [proxy_fcgi:error] [pid 9:tid 135408973556536] [client 172.19.0.1:38622] AH01071: Got error 'Primary script unknown'
+[Tue Mar 19 10:03:40.714275 2024] [proxy_fcgi:error] [pid 9:tid 135408973269816] [client 172.19.0.1:38622] AH01071: Got error 'Primary script unknown'
