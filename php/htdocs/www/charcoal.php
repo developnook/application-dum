@@ -5,7 +5,7 @@ include_once('navbar.php');
 
 <div id="container-charcoal" class="container">
 	<div class="section bg-color-white">
-		<div class="section-img">
+		<div class="section-img d-sm-flex d-sm-justify-content-center">
 			<img src="<?php echo $configs['path-image']; ?>/contents/knowledge/charcoal/charcoal-01.png" />
 		</div>
 	</div>

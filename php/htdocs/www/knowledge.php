@@ -13,9 +13,8 @@ include_once('navbar.php');
 			<div class="text-section">
 				<div class="text-box text-center">
 					<p class="title">ชาร์โคลดียังไง</p>
-					<p class="detail">สูตรสมุนไพรสกัดเข้มข้น</p>
-					<p class="detail">ด้วยส่วนผสมสมุนไพรจากธรรมชาติและกรรมวิธีการผลิตที่ทันสมัย</p>
-					<p class="detail mb-20px">สามารถคงคุณค่าสมุนไพร</p>
+					<p class="detail">รู้จักกับ ชาร์โคล ส่วนผสมทรงคุณค่า</p>
+					<p class="detail mb-20px">ที่ขาดไม่ได้ในยาสีฟัน</p>
 					<a href="<?php echo $path['charcoal']; ?>">
 						<button class="btn btn-black">อ่านต่อ</button>
 					</a>
@@ -33,10 +32,9 @@ include_once('navbar.php');
 				<div class="text-box text-center">
 					<p class="title ma-0">ส่วนผสมอันตราย</p>
 					<p class="title">ที่ไม่ควรมีในยาสีฟัน</p>
-					<p class="detail">สูตรสมุนไพรสกัดเข้มข้น ด้วยส่วนผสมสมุนไพรจากธรรมชาติ</p>
-					<p class="detail mb-20px">และกรรมวิธีการผลิตที่ทันสมัย สามารถคงคุณค่าสมุนไพร</p>
+					<p class="detail mb-20px">ส่วนผสมของยาสีฟันมีความสำคัญจริงหรือ ?</p>
 					<a href="<?php echo $path['charcoal']; ?>">
-						<button class="btn btn-black">อ่านต่อ</button>
+						<button class="btn btn-white">อ่านต่อ</button>
 					</a>
 				</div>
 			</div>
@@ -53,10 +51,13 @@ include_once('navbar.php');
 			</div>
 			<div class="text-section">
 				<div class="text-box text-center">
-					<p class="title">9 เหตุผลที่คุณควรยิ้มทุกวัน</p>
-					<p class="detail">สูตรสมุนไพรสกัดเข้มข้น</p>
-					<p class="detail">ด้วยส่วนผสมสมุนไพรจากธรรมชาติและกรรมวิธีการผลิตที่ทันสมัย</p>
-					<p class="detail mb-20px">สามารถคงคุณค่าสมุนไพร</p>
+					<p class="title">
+						<p>9 เหตุผลที่คุณ</p>
+						<p>ควรยิ้มทุกวัน</p>
+					</p>
+					<p class="detail">เราทุกคนเกิดมาพร้อมกับความสามารถในการ</p>
+					<p class="detail">ยิ้มหลายคนอาจยังไม่รู้ว่า การยิ้มเป็นยาแก้ปวด</p>
+					<p class="detail mb-20px">ธรรมชาติ ที่ให้ประโยชน์ต่อสุขภาพ</p>
 					<a href="<?php echo $path['charcoal']; ?>">
 						<button class="btn btn-black">อ่านต่อ</button>
 					</a>

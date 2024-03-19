@@ -1,3 +1,7 @@
+.nav-space{
+	margin-bottom: 4rem;
+}
+
 div#navbar {
 	display: grid;
 	top: 0;
@@ -162,7 +166,7 @@ div#navbar-mobile > div#navbar-control > div:nth-child(3)> img {
 	.navTrigger {
 		cursor: pointer;
 		width: 20px;
-		height: 15px;
+		height: 20px;
 		margin: auto;
 		/* position: absolute;
 		right: 30px;
@@ -187,7 +191,7 @@ div#navbar-mobile > div#navbar-control > div:nth-child(3)> img {
 	}
 	
 	.navTrigger i:nth-child(2) {
-		margin: 7px 0;
+		margin: 5px 0;
 		-webkit-animation: outM 0.8s backwards;
 		animation: outM 0.8s backwards;
 		-webkit-animation-direction: reverse;
@@ -207,6 +211,7 @@ div#navbar-mobile > div#navbar-control > div:nth-child(3)> img {
 	}
 	
 	.navTrigger.active i:nth-child(2) {
+		margin: 7px 0 !important;
 		-webkit-animation: inM 0.8s forwards;
 		animation: inM 0.8s forwards;
 	}

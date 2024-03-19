@@ -17,6 +17,7 @@
 		</div>
 	</div>
 </div>
+<div class="nav-space"></div>
 
 <!-- Navbar Responsive -->
 <div id="navbar-mobile">
