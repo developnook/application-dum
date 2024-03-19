@@ -28,13 +28,16 @@ include_once('navbar.php');
 		</div>
 	</div>
 
-	<div class="section-content bg-color-black text-color-white">
+	<div class="section-content bg-color-black text-color-white pb-8">
 		<div class="container-custom">
 			<div class="content">
 				<div class="text-content w-100 text-center">
-					<p class="detail">ยาสีฟันยืนหนึ่งเรื่องกลิ่นปาก</p>
-					<p class="detail">คุ้มค่าด้วยส่วนผสมสมุมไพรสกัดเข้มข้นถึง 9 ชนิด</p>
-					<p class="detail">ช่วยแก้ปัญหากลิ่นปากเรื้อรัง</p>
+					<p class="title-small ma-0">ยาสีฟันยืนหนึ่งเรื่องกลิ่นปาก</p>
+					<p class="title-small ma-0">
+						<p>คุ้มค่าด้วยส่วนผสมสมุมไพร</p>
+						<p>สกัดเข้มข้นถึง 9 ชนิด</p>
+					</p>
+					<p class="title-small">ช่วยแก้ปัญหากลิ่นปากเรื้อรัง</p>
 				</div>
 				<div class="img-box">
 					<img src="<?php echo $configs['path-image']; ?>/contents/product/product-picture-2.png" />
@@ -45,7 +48,7 @@ include_once('navbar.php');
 
 	<div class="section-content bg-color-black text-color-white">
 		<div class="container-custom">
-			<div class="content">
+			<div class="content align-items-start">
 				<div class="text-content">
 					<p class="detail">ฟันขาวขึ้นอย่างเป็นธรรมชาติ</p>
 					<p class="detail">ลมหายใจสดชื่อตลอดวัน</p>
@@ -71,7 +74,19 @@ include_once('navbar.php');
 			<div></div>
 		</div>
 	</div>
-	<div class="section bg-color-black text-color-white">
+
+
+		<div class="section-content-bg-img bg-color-black text-color-white">
+			<div class="text-center mb-80px">
+				<p class="title-small">ดำยาสีฟันชาร์โคล</p>
+				<a class="btn btn-white d-sm-width-fit" href="<?php echo $market['line-oa']; ?>" target="_blank">
+					ORDER NOW
+				</a>
+			</div>
+		</div>
+
+
+	<!-- <div class="section bg-color-black text-color-white">
 		<div class="section-img">
 			<img src="<?php echo $configs['path-image']; ?>/contents/product/product-picture-5.png" />
 		</div>	
@@ -85,7 +100,7 @@ include_once('navbar.php');
 			</div>
 			<div></div>
 		</div>
-	</div>
+	</div> -->
 
 	<div class="section bg-color-white text-color-black d-sm-none">
 		<div>

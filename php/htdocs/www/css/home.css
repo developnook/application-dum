@@ -16,6 +16,10 @@
 	margin-bottom: 30px;
 }
 
+.section-content .content .text-content > p > p{
+	display: inline-block;
+}
+
 .content .text-content .title{
 	font-size: var(--font-size-title);
 	margin-bottom: 10px;
@@ -425,10 +429,6 @@ div#container-home > div.section-map {
 		width: 100%;
 		text-align: center;
 		margin: 1rem 0px;
-	}
-
-	.section-content .content .text-content .title{
-		display: inline-block;
 	}
 }
 

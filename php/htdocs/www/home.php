@@ -10,10 +10,6 @@ include_once('navbar.php');
 				<div class="product-img-responsive">
 					<img src="<?php echo $configs['path-image']; ?>/contents/home/home-picture-1-1.png" />
 				</div>
-				<!-- <div class="text-content d-sm-none">
-					<p class="title">ยิ่งพูดยิ่งมั่นใจ ใครใช้ก็รู้สึกดี</p>
-					<p class="detail">DUM เชื่อว่า ทุกคนสามารถมีสุขภาพช่องปากและฟันที่ดี</p>
-				</div> -->
 				<div class="text-content">
 					<p class="title">
 						<p>ยิ่งพูดยิ่งมั่นใจ</p>
@@ -42,7 +38,7 @@ include_once('navbar.php');
 						สูตรสมุนไพรสกัดเข้มข้น ด้วยส่วนผสมสมุนไพรจากธรรมชาติและกรรมวิธีการผลิตที่ทันสมัย สามารถคงคุณค่าสมุนไพรไว้อย่างครบถ้วน ช่วยขจัดกลิ่นปาก ลดอาการเสียวฟันเพื่อปากสะอาด สุขภาพเหงือกและฟันแข็งแรง ยาวนานตลอดวัน
 					</p>
 					<div class="mt-30px d-sm-none">test icon</div>
-					<p class="detail">ใช้ยาสีฟันประมาณเท่าเมล็ดถั่วเขียว มี 3 ขนาดให้เลือก</p>
+					<p class="detail d-sm-none">ใช้ยาสีฟันประมาณเท่าเมล็ดถั่วเขียว มี 3 ขนาดให้เลือก</p>
 				</div>
 				<div class="product-img d-sm-none">
 					<img src="<?php echo $configs['path-image']; ?>/contents/home/home-picture-1-1.png" />
@@ -79,7 +75,7 @@ include_once('navbar.php');
 		</div>
 	</div> -->
 	<div class="section bg-color-white text-color-black">
-		<div class="section-img">
+		<div class="section-img d-sm-mb-5">
 			<img src="<?php echo $configs['path-image']; ?>/contents/knowledge/knowledge-picture-1.png" />
 		</div>	
 		<div class="section-control">
