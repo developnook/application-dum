@@ -311,6 +311,9 @@ li.img-slide-active {
 /* จอ ipad */
 @media (max-width: 992px) {
 	.container-custom{
+		max-width: 960px;
+	}
+	.container-custom{
 		width: 100%;
 		padding-right: 15px;
 		padding-left: 15px;
@@ -369,4 +372,16 @@ li.img-slide-active {
 /* จอมือถือ */
 @media (min-width: 340px) and (max-width: 577px){
 
+}
+
+@media (max-width: 1400px) {
+	.container-custom{
+		max-width: 1140px;
+	}
+}
+
+@media (max-width: 1200px) {
+	.container-custom{
+		max-width: 960px;
+	}
 }
