@@ -118,57 +118,57 @@ include_once('navbar.php');
 				<div>
 					<img src="<?php echo $configs['path-image']; ?>/contents/product/ingredient/aloe.png" />
 					<div>
-						<p>CHARCOAL POWDER</p>
-						<p>ช่วยขัดสีฟันให้ขาวขึ้น ขจัดคราบสกปกที่ติดตามซอกฟัน ลดปัญหาการเกิดกลิ่นปาก</p>
+						<p>ALOE BARBODENSIS LEAF POWDER</p>
+						<p>ช่วยเพิ่มความชุ่มชื้น ลดอาการอักเสบ และการระคายเคืองในช่องปาก</p>
 					</div>
 				</div>
 				<div>
 					<img src="<?php echo $configs['path-image']; ?>/contents/product/ingredient/psidium-guajava-leaf-extract.png" />
 					<div>
-						<p>CHARCOAL POWDER</p>
-						<p>ช่วยขัดสีฟันให้ขาวขึ้น ขจัดคราบสกปกที่ติดตามซอกฟัน ลดปัญหาการเกิดกลิ่นปาก</p>
+						<p>PSIDIUM GUAJAVA LEAF EXTRACT</p>
+						<p>ช่วยลดการอักเสบ และฆ่าเชื้อแบคทีเรียในช่องปาก</p>
 					</div>
 				</div> 
 				<div>
 					<img src="<?php echo $configs['path-image']; ?>/contents/product/ingredient/menthol.png" />
 					<div>
-						<p>CHARCOAL POWDER</p>
-						<p>ช่วยขัดสีฟันให้ขาวขึ้น ขจัดคราบสกปกที่ติดตามซอกฟัน ลดปัญหาการเกิดกลิ่นปาก</p>
+						<p>MENTHOL</p>
+						<p>ช่วยระงับกลิ่นปาก ให้ความรู้สึกปากสะอาด หอมเย็น สดชื่น</p>
 					</div>
 				</div> 
 				<div>
 					<img src="<?php echo $configs['path-image']; ?>/contents/product/ingredient/eugenia-caryophyllus-leaf-oil.png" />
 					<div>
-						<p>CHARCOAL POWDER</p>
-						<p>ช่วยขัดสีฟันให้ขาวขึ้น ขจัดคราบสกปกที่ติดตามซอกฟัน ลดปัญหาการเกิดกลิ่นปาก</p>
+						<p>EUGENIA CARYOPHYLLUS FLOWER OIL</p>
+						<p>ช่วยลดการสะสมของเชื้อแบคทีเรีย บรรเทาอาการปัญหาเลือดออกตามไรฟัน</p>
 					</div>
 				</div> 
 				<div>
 					<img src="<?php echo $configs['path-image']; ?>/contents/product/ingredient/mentha-piperita.png" />
 					<div>
-						<p>CHARCOAL POWDER</p>
-						<p>ช่วยขัดสีฟันให้ขาวขึ้น ขจัดคราบสกปกที่ติดตามซอกฟัน ลดปัญหาการเกิดกลิ่นปาก</p>
+						<p>MENTHA PIPERITA OIL</p>
+						<p>ช่วยทำให้ลมหายใจหอมสดชื่น</p>
 					</div>
 				</div> 
 				<div>
 					<img src="<?php echo $configs['path-image']; ?>/contents/product/ingredient/borneol.png" />
 					<div>
-						<p>CHARCOAL POWDER</p>
-						<p>ช่วยขัดสีฟันให้ขาวขึ้น ขจัดคราบสกปกที่ติดตามซอกฟัน ลดปัญหาการเกิดกลิ่นปาก</p>
+						<p>BORNEOL</p>
+						<p>ช่วยดูแลรักษาเหงือก บรรเทาอาการเหงือกบวม และเหงืออักเสบ</p>
 					</div>
 				</div> 
 				<div>
 					<img src="<?php echo $configs['path-image']; ?>/contents/product/ingredient/camphor.png" />
 					<div>
-						<p>CHARCOAL POWDER</p>
-						<p>ช่วยขัดสีฟันให้ขาวขึ้น ขจัดคราบสกปกที่ติดตามซอกฟัน ลดปัญหาการเกิดกลิ่นปาก</p>
+						<p>CAMPHOR</p>
+						<p>ช่วยบำรุงเส้นประสาทและรากฟัน ทำให้เหงือกรัดกระชับ ป้องกันปัญหาเหงือกร่น</p>
 					</div>
 				</div>
 				<div>
 					<img src="<?php echo $configs['path-image']; ?>/contents/product/ingredient/calcium-carbonate.png" />
 					<div>
-						<p>CHARCOAL POWDER</p>
-						<p>ช่วยขัดสีฟันให้ขาวขึ้น ขจัดคราบสกปกที่ติดตามซอกฟัน ลดปัญหาการเกิดกลิ่นปาก</p>
+						<p>CALCIUM CARBONATE</p>
+						<p>ช่วยบำรุงกระดูก ทำให้ฟันมีความแข็งแรง</p>
 					</div>
 				</div>
 			</div>
@@ -193,57 +193,57 @@ include_once('navbar.php');
 						<li class="splide__slide">
 							<img src="<?php echo $configs['path-image']; ?>/contents/product/ingredient/aloe.png" />
 							<div class="detail text-center">
-								<p class="title">CHARCOAL POWDER</p>
-								<p>ช่วยขัดสีฟันให้ขาวขึ้น ขจัดคราบสกปกที่ติดตามซอกฟัน ลดปัญหาการเกิดกลิ่นปาก</p>
+								<p class="title">ALOE BARBODENSIS LEAF POWDER</p>
+								<p>ช่วยเพิ่มความชุ่มชื้น ลดอาการอักเสบ และการระคายเคืองในช่องปาก</p>
 							</div>
 						</li>
 						<li class="splide__slide">
 							<img src="<?php echo $configs['path-image']; ?>/contents/product/ingredient/psidium-guajava-leaf-extract.png" />
 							<div class="detail text-center">
-								<p class="title">CHARCOAL POWDER</p>
-								<p>ช่วยขัดสีฟันให้ขาวขึ้น ขจัดคราบสกปกที่ติดตามซอกฟัน ลดปัญหาการเกิดกลิ่นปาก</p>
+								<p class="title">PSIDIUM GUAJAVA LEAF EXTRACT</p>
+								<p>ช่วยลดการอักเสบ และฆ่าเชื้อแบคทีเรียในช่องปาก</p>
 							</div>
 						</li>
 						<li class="splide__slide">
 							<img src="<?php echo $configs['path-image']; ?>/contents/product/ingredient/menthol.png" />
 							<div class="detail text-center">
-								<p class="title">Lorem ipsum dolor sit amet.</p>
-								<p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quae, veniam.</p>
+								<p class="title">MENTHOL</p>
+								<p>ช่วยระงับกลิ่นปาก ให้ความรู้สึกปากสะอาด หอมเย็น สดชื่น</p>
 							</div>
 						</li>
 						<li class="splide__slide">
 							<img src="<?php echo $configs['path-image']; ?>/contents/product/ingredient/eugenia-caryophyllus-leaf-oil.png" />
 							<div class="detail text-center">
-								<p class="title">Lorem ipsum dolor sit amet.</p>
-								<p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quae, veniam.</p>
+								<p class="title">EUGENIA CARYOPHYLLUS FLOWER OIL</p>
+								<p>ช่วยลดการสะสมของเชื้อแบคทีเรีย บรรเทาอาการปัญหาเลือดออกตามไรฟัน</p>
 							</div>
 						</li>
 						<li class="splide__slide">
 							<img src="<?php echo $configs['path-image']; ?>/contents/product/ingredient/mentha-piperita.png" />
 							<div class="detail text-center">
-								<p class="title">Lorem ipsum dolor sit amet.</p>
-								<p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quae, veniam.</p>
+								<p class="title">MENTHA PIPERITA OIL</p>
+								<p>ช่วยทำให้ลมหายใจหอมสดชื่น</p>
 							</div>
 						</li>
 						<li class="splide__slide">
 							<img src="<?php echo $configs['path-image']; ?>/contents/product/ingredient/borneol.png" />
 							<div class="detail text-center">
-								<p class="title">Lorem ipsum dolor sit amet.</p>
-								<p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quae, veniam.</p>
+								<p class="title">BORNEOL</p>
+								<p>ช่วยดูแลรักษาเหงือก บรรเทาอาการเหงือกบวม และเหงืออักเสบ</p>
 							</div>
 						</li>
 						<li class="splide__slide">
 							<img src="<?php echo $configs['path-image']; ?>/contents/product/ingredient/camphor.png" />
 							<div class="detail text-center">
-								<p class="title">Lorem ipsum dolor sit amet.</p>
-								<p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quae, veniam.</p>
+								<p class="title">CAMPHOR</p>
+								<p>ช่วยบำรุงเส้นประสาทและรากฟัน ทำให้เหงือกรัดกระชับ ป้องกันปัญหาเหงือกร่น</p>
 							</div>
 						</li>
 						<li class="splide__slide">
 							<img src="<?php echo $configs['path-image']; ?>/contents/product/ingredient/calcium-carbonate.png" />
 							<div class="detail text-center">
-								<p class="title">Lorem ipsum dolor sit amet.</p>
-								<p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quae, veniam.</p>
+								<p class="title">CALCIUM CARBONATE</p>
+								<p>ช่วยบำรุงกระดูก ทำให้ฟันมีความแข็งแรง</p>
 							</div>
 						</li>
 					</ul>
