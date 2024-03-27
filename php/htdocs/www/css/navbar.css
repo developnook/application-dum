@@ -358,11 +358,17 @@ div#navbar-mobile > div#navbar-control > div:nth-child(1)> img {
 		position: fixed;
 		z-index: 99;
 		top: 62px;
+		opacity: 1;
 	}
 
 	.navbar-responsive-toggle{
+		height: 0;
+		position: fixed;
+		z-index: 99;
+		top: 62px;
 		background-color: #fff;
 		width: 100%;
+		opacity: 0;
 	}
 
 	.navbar-responsive-toggle ul{
